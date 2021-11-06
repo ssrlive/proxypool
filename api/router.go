@@ -8,10 +8,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"
-	"github.com/zu1k/proxypool/config"
-	binhtml "github.com/zu1k/proxypool/internal/bindata/html"
-	"github.com/zu1k/proxypool/internal/cache"
-	"github.com/zu1k/proxypool/pkg/provider"
+	"github.com/ssrlive/proxypool/config"
+	binhtml "github.com/ssrlive/proxypool/internal/bindata/html"
+	"github.com/ssrlive/proxypool/internal/cache"
+	"github.com/ssrlive/proxypool/pkg/provider"
 )
 
 const version = "v0.3.8"

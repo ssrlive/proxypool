@@ -3,9 +3,9 @@ package provider
 import (
 	"strings"
 
-	"github.com/zu1k/proxypool/pkg/tool"
+	"github.com/ssrlive/proxypool/pkg/tool"
 
-	"github.com/zu1k/proxypool/pkg/proxy"
+	"github.com/ssrlive/proxypool/pkg/proxy"
 )
 
 type Surge struct {

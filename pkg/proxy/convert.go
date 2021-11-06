@@ -3,7 +3,7 @@ package proxy
 import (
 	"errors"
 
-	"github.com/zu1k/proxypool/pkg/tool"
+	"github.com/ssrlive/proxypool/pkg/tool"
 )
 
 func SS2SSR(ss *Shadowsocks) (ssr *ShadowsocksR, err error) {

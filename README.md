@@ -43,11 +43,24 @@
 
 ### 从源码编译
 
-需要安装Golang
+需要 [安装 Golang](https://golang.org/doc/install)
 
-```sh
-$ go get -u -v github.com/ssrlive/proxypool
+```bash
+go get -u -v github.com/ssrlive/proxypool@latest
 ```
+
+or 
+```
+git clone https://github.com/ssrlive/proxypool.git
+cd proxypool
+go get
+go build
+```
+then edit `config/config.yaml` and `config/source.yaml` and run it
+```
+go run main.go -c ./config/config.yaml
+```
+
 
 ### 下载预编译程序
 

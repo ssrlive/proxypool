@@ -5,13 +5,13 @@ module github.com/ssrlive/proxypool
 go 1.14
 
 require (
-	github.com/Dreamacro/clash v1.0.1-0.20200812125056-8b7c731fd629
+	github.com/Dreamacro/clash v1.7.1
 	github.com/PuerkitoBio/goquery v1.5.1 // indirect
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/antchfx/htmlquery v1.2.3 // indirect
 	github.com/antchfx/xmlquery v1.2.4 // indirect
 	github.com/antchfx/xpath v1.1.8 // indirect
-	github.com/cloudflare/cloudflare-go v0.17.0
+	github.com/cloudflare/cloudflare-go v0.27.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/gin-gonic/gin v1.7.2
 	github.com/gobwas/glob v0.2.3 // indirect

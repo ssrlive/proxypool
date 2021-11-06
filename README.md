@@ -43,13 +43,13 @@
 
 ### 从源码编译
 
-需要 [安装 Golang](https://golang.org/doc/install)
+需要 [安装 Golang](https://golang.org/doc/install) ， 然后拉取代码,
 
 ```bash
 go get -u -v github.com/ssrlive/proxypool@latest
 ```
 
-or 
+或者，拉取代码的另一种方式 
 ```
 git clone https://github.com/ssrlive/proxypool.git
 cd proxypool
@@ -57,6 +57,10 @@ go get
 go build
 ```
 then edit `config/config.yaml` and `config/source.yaml` and run it
+```
+./proxypool -c ./config/config.yaml
+```
+或者从源代码运行
 ```
 go run main.go -c ./config/config.yaml
 ```

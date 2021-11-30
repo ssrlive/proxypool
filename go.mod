@@ -29,6 +29,6 @@ require (
 	github.com/temoto/robotstxt v1.1.1 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
-	gorm.io/driver/postgres v1.2.2
-	gorm.io/gorm v1.22.2
+	gorm.io/driver/postgres v1.2.3
+	gorm.io/gorm v1.22.3
 )

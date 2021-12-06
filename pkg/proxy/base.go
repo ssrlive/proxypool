@@ -91,7 +91,7 @@ func ParseProxyFromLink(link string) (p Proxy, err error) {
 	}
 	_, country, err := geoIp.Find(p.BaseInfo().Server) // IP库不准
 	if err != nil {
-		country = "������ ZZ"
+		country = "🏁 ZZ"
 	}
 	p.SetCountry(country)
 	// trojan依赖域名？<-这是啥?不管什么情况感觉都不应该替换域名为IP（主要是IP库的质量和节点质量不该挂钩）

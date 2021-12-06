@@ -1,17 +1,16 @@
 package provider
 
 import (
-	"strings"
-
 	"github.com/ssrlive/proxypool/pkg/tool"
+	"strings"
 )
 
-type SSRSub struct {
+type TrojanSub struct {
 	Base
 }
 
-func (sub SSRSub) Provide() string {
-	sub.Types = "ssr"
+func (sub TrojanSub) Provide() string {
+	sub.Types = "trojan"
 	sub.preFilter()
 	var resultBuilder strings.Builder
 	for _, p := range *sub.Proxies {

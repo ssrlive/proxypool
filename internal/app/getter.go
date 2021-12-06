@@ -2,7 +2,7 @@ package app
 
 import (
 	"errors"
-	"fmt"
+	"github.com/ssrlive/proxypool/log"
 
 	"github.com/ssrlive/proxypool/internal/cache"
 
@@ -32,23 +32,23 @@ func initGetters(sourceFiles []string) {
 	for _, path := range sourceFiles {
 		data, err := config.ReadFile(path)
 		if err != nil {
-			fmt.Errorf("Init SourceFile Error: %s\n", err.Error())
+			log.Errorln("Init SourceFile Error: %s\n", err.Error())
 			continue
 		}
 		sourceList := make([]config.Source, 0)
 		err = yaml.Unmarshal(data, &sourceList)
 		if err != nil {
-			fmt.Errorf("Init SourceFile Error: %s\n", err.Error())
+			log.Errorln("Init SourceFile Error: %s\n", err.Error())
 			continue
 		}
 		for _, source := range sourceList {
 			g, err := getter.NewGetter(source.Type, source.Options)
 			if err == nil && g != nil {
 				Getters = append(Getters, g)
-				fmt.Println("init getter:", source.Type, source.Options)
+				log.Debugln("init getter: %s %v", source.Type, source.Options)
 			}
 		}
 	}
-	fmt.Println("Getter count:", len(Getters))
+	log.Infoln("Getter count: %d", len(Getters))
 	cache.GettersCount = len(Getters)
 }

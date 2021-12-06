@@ -40,7 +40,7 @@
 
 > heroku app域名为appname.herokuapp.com。项目内配置文件为./config/config.yaml
 
-配置文件模板见 config/config.yaml 文件，可选项区域均可不填。完整配置选项请查看[配置文件说明](https://github.com/Sansui233/proxypool/wiki/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E)。
+配置文件模板见 config/config.yaml 文件，可选项区域均可不填。完整配置选项请查看[配置文件说明](https://github.com/ssrlive/proxypool/wiki/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E)。
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
@@ -92,7 +92,7 @@ docker pull docker.pkg.github.com/ssrlive/proxypool/proxypool:latest
 
 source.yaml 文件中定义了抓取源，需要定期手动维护更新
 
-完整的配置选项见[配置文件说明](https://github.com/Sansui233/proxypool/wiki/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E)
+完整的配置选项见[配置文件说明](https://github.com/ssrlive/proxypool/wiki/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E)
 
 ### 启动程序
 
@@ -102,7 +102,7 @@ source.yaml 文件中定义了抓取源，需要定期手动维护更新
 proxypool -c ./config/config.yaml
 ```
 
-如果需要部署到VPS，更多细节请[查看wiki](https://github.com/Sansui233/proxypool/wiki/%E9%83%A8%E7%BD%B2%E5%88%B0VPS-Step-by-Step)。
+如果需要部署到VPS，更多细节请[查看wiki](https://github.com/ssrlive/proxypool/wiki/%E9%83%A8%E7%BD%B2%E5%88%B0VPS-Step-by-Step)。
 
 ## Clash配置文件
 
@@ -112,7 +112,7 @@ proxypool -c ./config/config.yaml
 
 ## 本地检查节点可用性
 
-此项非必须。为了提高实际可用性，可选择增加一个本地服务器，检测远程proxypool节点在本地的可用性并提供配置，见[proxypoolCheck](https://github.com/Sansui233/proxypoolCheck)。
+此项非必须。为了提高实际可用性，可选择增加一个本地服务器，检测远程 proxypool 节点在本地的可用性并提供配置，见 [proxypoolCheck](https://github.com/ssrlive/proxypoolCheck)。
 
 ## 截图
 

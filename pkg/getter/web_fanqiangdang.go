@@ -46,7 +46,7 @@ func (w *WebFanqiangdang) Get() proxy.ProxyList {
 		if strings.Contains(innerHTML, "data-cfemail") {
 			decoded, err := tool.CFEmailDecode(tool.GetCFEmailPayload(innerHTML))
 			if err == nil {
-				e.Text = strings.ReplaceAll(e.Text, "[email protected]", decoded)
+				e.Text = strings.ReplaceAll(e.Text, "[email protected]", decoded)
 			}
 		}
 		w.results = append(w.results, FuzzParseProxyFromString(e.Text)...)

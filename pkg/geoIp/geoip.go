@@ -98,7 +98,7 @@ func (g GeoIP) Find(ipORdomain string) (ip, country string, err error) {
 	if found {
 		country = fmt.Sprintf("%v%v", emoji, countryIsoCode)
 	} else {
-		country = "��ZZ"
+		country = "🏁ZZ"
 	}
 	return ip, country, err
 }

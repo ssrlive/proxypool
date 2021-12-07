@@ -5,26 +5,26 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/Dreamacro/clash/adapter"
-	C "github.com/Dreamacro/clash/constant"
-	"github.com/ssrlive/proxypool/log"
-	"github.com/ssrlive/proxypool/pkg/proxy"
-	"github.com/ivpusic/grpool"
 	"sort"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/Dreamacro/clash/adapter"
+	C "github.com/Dreamacro/clash/constant"
+	"github.com/ssrlive/proxypool/log"
+	"github.com/ssrlive/proxypool/pkg/proxy"
+	"github.com/ivpusic/grpool"
 )
 
-var SpeedTimeout = time.Second * 10
-
 // SpeedTestAll tests speed of a group of proxies. Results are stored in ProxyStats
-func SpeedTestAll(proxies []proxy.Proxy, conns int) {
+func SpeedTestAll(proxies []proxy.Proxy) {
+	SpeedExist = true
 	if ok := checkErrorProxies(proxies); !ok {
 		return
 	}
-	numWorker := conns
+	numWorker := SpeedConn
 	if numWorker <= 0 {
 		numWorker = 5
 	}
@@ -36,7 +36,9 @@ func SpeedTestAll(proxies []proxy.Proxy, conns int) {
 	m := sync.Mutex{}
 
 	log.Infoln("Speed Test ON")
+	log.Debugln("[speedcheck.go] connection: %d, timeout: %d", SpeedConn, SpeedTimeout)
 	doneCount := 0
+	dcm := sync.Mutex{}
 	// use grpool
 	pool := grpool.NewPool(numWorker, numJob)
 	pool.WaitCount(len(proxies))
@@ -58,9 +60,13 @@ func SpeedTestAll(proxies []proxy.Proxy, conns int) {
 				resultCount++
 				m.Unlock()
 			}
+
+			// Progress status
+			dcm.Lock()
 			doneCount++
 			progress := float64(doneCount) * 100 / float64(len(proxies))
 			fmt.Printf("\r\t[%5.1f%% DONE]", progress)
+			dcm.Unlock()
 		}
 	}
 	pool.WaitAll()
@@ -70,11 +76,12 @@ func SpeedTestAll(proxies []proxy.Proxy, conns int) {
 }
 
 // SpeedTestNew tests speed of new proxies which is not in ProxyStats. Then appended to ProxyStats
-func SpeedTestNew(proxies []proxy.Proxy, conns int) {
+func SpeedTestNew(proxies []proxy.Proxy) {
+	SpeedExist = true
 	if ok := checkErrorProxies(proxies); !ok {
 		return
 	}
-	numWorker := conns
+	numWorker := SpeedConn
 	if numWorker <= 0 {
 		numWorker = 5
 	}
@@ -86,6 +93,7 @@ func SpeedTestNew(proxies []proxy.Proxy, conns int) {
 	m := sync.Mutex{}
 
 	log.Infoln("Speed Test ON")
+	log.Debugln("[speedcheck.go] connection: %d, timeout: %d", SpeedConn, SpeedTimeout)
 	doneCount := 0
 	// use grpool
 	pool := grpool.NewPool(numWorker, numJob)
@@ -165,9 +173,6 @@ func ProxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 	if user == nil {
 		return -1, errors.New("fetch User Infoln failed in go routine") // 我真的不会用channel抛出err，go routine的不明原因阻塞我服了。下面的两个BUG现在都不知道原因，逻辑上不该出现的
 	}
-	if &serverList == nil {
-		return -1, errors.New("unexpected error when fetching serverlist: addr of var serverlist nil")
-	}
 	if len(serverList.Servers) == 0 {
 		return -1, errors.New("unexpected error when fetching serverlist: unexpected 0 server")
 	}
@@ -184,8 +189,12 @@ func ProxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 	// Sort by distance
 	sort.Sort(ByDistance{serverList.Servers})
 
-	var targets Servers
-	targets = append(serverList.Servers[:3])
+	numServer := 3
+	if len(serverList.Servers) < 3 {
+		numServer = len(serverList.Servers)
+	}
+	targets := make(Servers, 0)
+	targets = append(targets, serverList.Servers[:numServer]...)
 
 	// Test
 	targets.StartTest(clashProxy)
@@ -261,7 +270,7 @@ func downloadTest(clashProxy C.Proxy, sURL string, latency time.Duration) float6
 func dlWarmUp(clashProxy C.Proxy, dlURL string) error {
 	size := dlSizes[2]
 	url := dlURL + "/random" + strconv.Itoa(size) + "x" + strconv.Itoa(size) + ".jpg"
-	err := HTTPGetBodyForSpeedTest(clashProxy, url, SpeedTimeout)
+	err := HTTPGetBodyViaProxyWithTimeNoReturn(clashProxy, url, SpeedTimeout)
 	if err != nil {
 		return err
 	}
@@ -271,7 +280,7 @@ func dlWarmUp(clashProxy C.Proxy, dlURL string) error {
 func downloadRequest(clashProxy C.Proxy, dlURL string, w int) error {
 	size := dlSizes[w]
 	url := dlURL + "/random" + strconv.Itoa(size) + "x" + strconv.Itoa(size) + ".jpg"
-	err := HTTPGetBodyForSpeedTest(clashProxy, url, SpeedTimeout)
+	err := HTTPGetBodyViaProxyWithTimeNoReturn(clashProxy, url, SpeedTimeout)
 	if err != nil {
 		return err
 	}

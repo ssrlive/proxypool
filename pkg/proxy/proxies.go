@@ -66,10 +66,18 @@ func (ps ProxyList) Sort() ProxyList {
 	return ps
 }
 
-func (ps ProxyList) NameSetCounrty() ProxyList {
+func (ps ProxyList) NameClear() ProxyList {
 	num := len(ps)
 	for i := 0; i < num; i++ {
-		ps[i].SetName(ps[i].BaseInfo().Country)
+		ps[i].SetName("")
+	}
+	return ps
+}
+
+func (ps ProxyList) NameAddCounrty() ProxyList {
+	num := len(ps)
+	for i := 0; i < num; i++ {
+		ps[i].SetName(ps[i].BaseInfo().Name + ps[i].BaseInfo().Country)
 	}
 	return ps
 }
@@ -142,7 +150,7 @@ func (ps *ProxyList) UniqAppendProxyList(new ProxyList) ProxyList {
 	}
 	for _, p := range new {
 		isExist := false
-		for i, _ := range *ps {
+		for i := range *ps {
 			if (*ps)[i].Identifier() == p.Identifier() {
 				isExist = true
 				break
@@ -161,7 +169,7 @@ func (ps *ProxyList) UniqAppendProxy(new Proxy) ProxyList {
 		*ps = append(*ps, new)
 		return *ps
 	}
-	for i, _ := range *ps {
+	for i := range *ps {
 		if (*ps)[i].Identifier() == new.Identifier() {
 			return *ps
 		}

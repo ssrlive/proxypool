@@ -3,11 +3,12 @@ package tool
 import (
 	"bytes"
 	"errors"
-	"github.com/robertkrimen/otto"
 	"io/ioutil"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/robertkrimen/otto"
 )
 
 // Find email playload
@@ -93,7 +94,7 @@ func ScriptReplace(js string, varname string) string {
 	if len(js) < 2 {
 		return js
 	}
-	for i, _ := range strs {
+	for i := range strs {
 		//replace location
 		if varLocation != "" && strings.Contains(strs[i], varLocation) {
 			re3, err := regexp.Compile(varLocation + ".*?[]]") // _LoKlO[_jzvXT]
@@ -152,7 +153,7 @@ func ScriptReplace(js string, varname string) string {
 	}
 
 	if varWindow != "" {
-		for i, _ := range strs {
+		for i := range strs {
 			if strings.Contains(strs[i], varWindow) {
 				bound = i
 				break

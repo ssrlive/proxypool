@@ -3,6 +3,7 @@ package proxy
 import (
 	"encoding/json"
 	"errors"
+	"github.com/ssrlive/proxypool/pkg/geoIp"
 	"strings"
 )
 
@@ -32,6 +33,10 @@ func (b *Base) SetName(name string) {
 
 func (b *Base) AddToName(name string) {
 	b.Name = b.Name + name
+}
+
+func (b *Base) AddBeforeName(name string) {
+	b.Name = name + b.Name
 }
 
 // SetIP() to a proxy
@@ -89,9 +94,9 @@ func ParseProxyFromLink(link string) (p Proxy, err error) {
 	if err != nil || p == nil {
 		return nil, errors.New("link parse failed")
 	}
-	_, country, err := geoIp.Find(p.BaseInfo().Server) // IP库不准
+	_, country, err := geoIp.GeoIpDB.Find(p.BaseInfo().Server) // IP库不准
 	if err != nil {
-		country = "🏁 ZZ"
+		country = "�� ZZ"
 	}
 	p.SetCountry(country)
 	// trojan依赖域名？<-这是啥?不管什么情况感觉都不应该替换域名为IP（主要是IP库的质量和节点质量不该挂钩）

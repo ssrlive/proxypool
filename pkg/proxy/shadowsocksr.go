@@ -28,10 +28,9 @@ type ShadowsocksR struct {
 	Password      string `yaml:"password" json:"password"`
 	Cipher        string `yaml:"cipher" json:"cipher"`
 	Protocol      string `yaml:"protocol" json:"protocol"`
-	ProtocolParam string `yaml:"protocol-param,omitempty" json:"protocol_param,omitempty"`
+	ProtocolParam string `yaml:"protocol-param,omitempty" json:"protocol-param,omitempty"`
 	Obfs          string `yaml:"obfs" json:"obfs"`
-	ObfsParam     string `yaml:"obfs-param,omitempty" json:"obfs_param,omitempty"`
-	Group         string `yaml:"group,omitempty" json:"group,omitempty"`
+	ObfsParam     string `yaml:"obfs-param,omitempty" json:"obfs-param,omitempty"`
 }
 
 func (ssr ShadowsocksR) Identifier() string {
@@ -162,7 +161,6 @@ func ParseSSRLink(link string) (*ShadowsocksR, error) {
 		ProtocolParam: protocolParam,
 		Obfs:          obfs,
 		ObfsParam:     obfsParam,
-		Group:         "",
 	}, nil
 }
 

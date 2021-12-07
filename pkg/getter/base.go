@@ -74,9 +74,9 @@ var (
 )
 
 func AssertTypeStringNotNull(i interface{}) (str string, err error) {
-	switch i.(type) {
+	switch i := i.(type) {
 	case string:
-		str = i.(string)
+		str = i
 		if str == "" {
 			return "", errors.New("string is null")
 		}
@@ -84,5 +84,4 @@ func AssertTypeStringNotNull(i interface{}) (str string, err error) {
 	default:
 		return "", errors.New("type is not string")
 	}
-	return "", nil
 }

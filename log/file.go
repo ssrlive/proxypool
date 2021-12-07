@@ -6,32 +6,33 @@ import (
 )
 
 var (
-	logDir         = "tmp"
-	logFilePath    = filepath.Join(logDir, "run.log")
-	allLogFilePath = filepath.Join(logDir, "all.log")
+	logDir  = "/var/log/proxypool"
+	logFile = filepath.Join(logDir, "run.log")
 )
 
-var logFile *os.File
-var allLogFile *os.File
-
 func init() {
-	ok := initDir(logDir)
-	if ok {
-		logFile = initFile(logFilePath)
-		allLogFile = initFile(allLogFilePath)
-	}
+	//ok := initDir(logDir)
+	//fPath := filepath.Join(logDir, logFile)
+	//if ok {
+	//	if f := initFile(fPath); f != nil {
+	//		if err := f.Close(); err != nil {
+	//			Infoln("init log file in %s", fPath)
+	//		}
+	//	}
+	//}
 }
 
-func initDir(path string) bool {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		if err := os.Mkdir(path, 0755); err != nil {
-			Errorln("init log dir error: %s", err.Error())
-		}
-	}
-	return true
-}
+// func initDir(path string) bool {
+// 	if _, err := os.Stat(path); os.IsNotExist(err) {
+// 		if err := os.Mkdir(path, 0755); err != nil {
+// 			Errorln("init log dir error: %s", err.Error())
+// 		}
+// 	}
+// 	return true
+// }
 
 func initFile(path string) *os.File {
+	// TODO detect old log files and compress
 	f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, 0755)
 	if err != nil {
 		Errorln("get log file error: %s", err.Error())

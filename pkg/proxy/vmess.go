@@ -46,6 +46,10 @@ type HTTP2Options struct {
 	Path string   `yaml:"path,omitempty" json:"path,omitempty"` // 暂只处理一个Path
 }
 
+// type GrpcOptions struct {
+// 	GrpcServiceName string `proxy:"grpc-service-name,omitempty"`
+// }
+
 func (v Vmess) Identifier() string {
 	return net.JoinHostPort(v.Server, strconv.Itoa(v.Port)) + v.Cipher + v.UUID
 }
@@ -354,8 +358,8 @@ func str2jsonDynaUnmarshal(s string) (jsn map[string]interface{}, err error) {
 	if err != nil {
 		return nil, err
 	}
-	jsn = f.(interface{}).(map[string]interface{}) // f is pointer point to map struct
-	if jsn == nil {
+	jsn, ok := f.(interface{}).(map[string]interface{}) // f is pointer point to map struct
+	if !ok {
 		return nil, ErrorVmessPayloadParseFail
 	}
 	return jsn, err
@@ -371,27 +375,24 @@ func mapStrInter2VmessLinkJson(jsn map[string]interface{}) (vmessLinkJson, error
 		tag := strings.Split(tags, ",")
 		if jsnVal, ok := jsn[strings.ToLower(tag[0])]; ok {
 			if strings.ToLower(tag[0]) == "port" { // set int in port
-				switch jsnVal.(type) {
+				switch jsnVal := jsnVal.(type) {
 				case float64:
-					vmessVal.Field(i).SetInt(int64(jsnVal.(float64)))
-					break
+					vmessVal.Field(i).SetInt(int64(jsnVal))
 				case string: // Force Convert
-					valInt, err := strconv.Atoi(jsnVal.(string))
+					valInt, err := strconv.Atoi(jsnVal)
 					if err != nil {
 						valInt = 443
 					}
 					vmessVal.Field(i).SetInt(int64(valInt))
-					break
 				default:
 					vmessVal.Field(i).SetInt(443)
 				}
 			} else if strings.ToLower(tag[0]) == "ps" {
 				continue
 			} else { // set string in other fields
-				switch jsnVal.(type) {
+				switch jsnVal := jsnVal.(type) {
 				case string:
-					vmessVal.Field(i).SetString(jsnVal.(string))
-					break
+					vmessVal.Field(i).SetString(jsnVal)
 				default: // Force Convert
 					vmessVal.Field(i).SetString(fmt.Sprintf("%v", jsnVal))
 				}

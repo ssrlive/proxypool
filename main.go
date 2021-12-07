@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/ssrlive/proxypool/pkg/geoIp"
 	_ "net/http/pprof"
 	"os"
 
@@ -10,7 +11,6 @@ import (
 	"github.com/ssrlive/proxypool/internal/cron"
 	"github.com/ssrlive/proxypool/internal/database"
 	"github.com/ssrlive/proxypool/log"
-	"github.com/ssrlive/proxypool/pkg/proxy"
 )
 
 var configFilePath = ""
@@ -28,6 +28,7 @@ func main() {
 	log.SetLevel(log.INFO)
 	if debugMode {
 		log.SetLevel(log.DEBUG)
+		log.Debugln("=======Debug Mode=======")
 	}
 	if configFilePath == "" {
 		configFilePath = os.Getenv("CONFIG_FILE")
@@ -44,7 +45,7 @@ func main() {
 	database.InitTables()
 	// init GeoIp db reader and map between emoji's and countries
 	// return: struct geoIp (dbreader, emojimap)
-	err = proxy.InitGeoIpDB()
+	err = geoIp.InitGeoIpDB()
 	if err != nil {
 		os.Exit(1)
 	}

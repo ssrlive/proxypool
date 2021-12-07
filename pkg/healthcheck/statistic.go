@@ -7,6 +7,9 @@ type Stat struct {
 	Speed    float64
 	Delay    uint16
 	ReqCount uint16
+	Relay    bool
+	Pool     bool
+	OutIp    string
 	Id       string
 }
 
@@ -34,6 +37,11 @@ func (ps *Stat) UpdatePSDelay(delay uint16) {
 	ps.Delay = delay
 }
 
+// Update out ip for a Stat
+func (ps *Stat) UpdatePSOutIp(outIp string) {
+	ps.OutIp = outIp
+}
+
 // Count + 1 for a Stat
 func (ps *Stat) UpdatePSCount() {
 	ps.ReqCount++
@@ -42,7 +50,7 @@ func (ps *Stat) UpdatePSCount() {
 // Find a proxy's Stat in StatList
 func (psList StatList) Find(p proxy.Proxy) (*Stat, bool) {
 	s := p.Identifier()
-	for i, _ := range psList {
+	for i := range psList {
 		if psList[i].Id == s {
 			return &psList[i], true
 		}
@@ -54,7 +62,7 @@ func (psList StatList) Find(p proxy.Proxy) (*Stat, bool) {
 func (psList StatList) ReqCountThan(n uint16, pl []proxy.Proxy, reset bool) []proxy.Proxy {
 	proxies := make([]proxy.Proxy, 0)
 	for _, p := range pl {
-		for j, _ := range psList {
+		for j := range psList {
 			if psList[j].ReqCount > n && p.Identifier() == psList[j].Id {
 				proxies = append(proxies, p)
 			}
@@ -62,7 +70,7 @@ func (psList StatList) ReqCountThan(n uint16, pl []proxy.Proxy, reset bool) []pr
 	}
 	// reset request count
 	if reset {
-		for i, _ := range psList {
+		for i := range psList {
 			psList[i].ReqCount = 0
 		}
 	}
@@ -113,7 +121,7 @@ func (psList StatList) SortProxiesBySpeed(proxies []proxy.Proxy) []proxy.Proxy {
 				}
 			}
 		}
-		if flag == false {
+		if !flag {
 			break
 		}
 	}

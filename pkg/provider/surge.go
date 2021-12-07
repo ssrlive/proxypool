@@ -27,13 +27,13 @@ func (s Surge) Provide() string {
 }
 
 func checkSurgeSupport(p proxy.Proxy) bool {
-	switch p.(type) {
+	switch p := p.(type) {
 	case *proxy.ShadowsocksR:
 		return false
 	case *proxy.Vmess:
 		return true
 	case *proxy.Shadowsocks:
-		ss := p.(*proxy.Shadowsocks)
+		ss := p
 		if tool.CheckInList(proxy.SSCipherList, ss.Cipher) {
 			return true
 		}

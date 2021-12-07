@@ -26,7 +26,6 @@ func Convert2SSR(p Proxy) (ssr *ShadowsocksR, err error) {
 			Cipher:   ss.Cipher,
 			Protocol: "origin",
 			Obfs:     "plain",
-			Group:    "",
 		}, nil
 	}
 	return nil, ErrorTypeCanNotConvert

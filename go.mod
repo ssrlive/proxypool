@@ -5,7 +5,7 @@ module github.com/ssrlive/proxypool
 go 1.16
 
 require (
-	github.com/Dreamacro/clash v1.8.0
+	github.com/Dreamacro/clash v1.9.0
 	github.com/PuerkitoBio/goquery v1.5.1 // indirect
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/antchfx/htmlquery v1.2.3 // indirect

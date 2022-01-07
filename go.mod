@@ -16,7 +16,7 @@ require (
 	github.com/gin-gonic/gin v1.7.7
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gocolly/colly v1.2.0
-	github.com/heroku/x v0.0.43
+	github.com/heroku/x v0.0.44
 	github.com/ivpusic/grpool v1.0.0
 	github.com/jasonlvhit/gocron v0.0.1
 	github.com/json-iterator/go v1.1.10 // indirect

@@ -2,9 +2,11 @@ package main
 
 import (
 	"flag"
-	"github.com/ssrlive/proxypool/pkg/geoIp"
 	_ "net/http/pprof"
 	"os"
+	"path/filepath"
+
+	"github.com/ssrlive/proxypool/pkg/geoIp"
 
 	"github.com/ssrlive/proxypool/api"
 	"github.com/ssrlive/proxypool/internal/app"
@@ -20,6 +22,8 @@ func main() {
 	//go func() {
 	//	http.ListenAndServe("0.0.0.0:6060", nil)
 	//}()
+
+	os.Chdir(fullPathOfExecutable())
 
 	flag.StringVar(&configFilePath, "c", "", "path to config file: config.yaml")
 	flag.BoolVar(&debugMode, "d", false, "debug output")
@@ -53,4 +57,13 @@ func main() {
 	go app.CrawlGo() // 抓取主程序
 	go cron.Cron()   // 定时运行
 	api.Run()        // Web Serve
+}
+
+func fullPathOfExecutable() string {
+	exePath, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	res, _ := filepath.EvalSymlinks(filepath.Dir(exePath))
+	return res
 }

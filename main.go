@@ -23,7 +23,7 @@ func main() {
 	//	http.ListenAndServe("0.0.0.0:6060", nil)
 	//}()
 
-	os.Chdir(fullPathOfExecutable())
+	os.Chdir(fullDirOfExecutable())
 
 	flag.StringVar(&configFilePath, "c", "", "path to config file: config.yaml")
 	flag.BoolVar(&debugMode, "d", false, "debug output")
@@ -59,7 +59,7 @@ func main() {
 	api.Run()        // Web Serve
 }
 
-func fullPathOfExecutable() string {
+func fullDirOfExecutable() string {
 	exePath, err := os.Executable()
 	if err != nil {
 		panic(err)

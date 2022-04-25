@@ -37,6 +37,14 @@ type ConfigOptions struct {
 // Config 配置
 var Config ConfigOptions
 
+func (config ConfigOptions) HostUrl() string {
+	url := config.Domain
+	if len(strings.Split(url, ":")) <= 1 {
+		url = url + ":" + config.Port
+	}
+	return url
+}
+
 // Parse 解析配置文件，支持本地文件系统和网络链接
 func Parse(path string) error {
 	if path == "" {

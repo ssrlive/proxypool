@@ -3,13 +3,14 @@ package config
 import (
 	"encoding/json"
 	"errors"
-	"github.com/ssrlive/proxypool/log"
 	"io/ioutil"
 	"os"
 	"strings"
 
-	"github.com/ssrlive/proxypool/pkg/tool"
+	"github.com/ssrlive/proxypool/log"
+
 	"github.com/ghodss/yaml"
+	"github.com/ssrlive/proxypool/pkg/tool"
 )
 
 var configFilePath = "config.yaml"
@@ -96,9 +97,16 @@ func Parse(path string) error {
 	return nil
 }
 
+func IsLocalFile(path string) bool {
+	if strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://") {
+		return false
+	}
+	return true
+}
+
 // 从本地文件或者http链接读取配置文件内容
 func ReadFile(path string) ([]byte, error) {
-	if strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://") {
+	if !IsLocalFile(path) {
 		resp, err := tool.GetHttpClient().Get(path)
 		if err != nil {
 			return nil, errors.New("config file http get fail")

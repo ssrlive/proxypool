@@ -8,6 +8,7 @@ proxypool
 *.dylib
 bin/*
 tmp/
+.vscode/
 
 # Test binary, build with `go test -c`
 *.test

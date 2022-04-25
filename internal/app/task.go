@@ -2,6 +2,9 @@ package app
 
 import (
 	"fmt"
+	"sync"
+	"time"
+
 	C "github.com/ssrlive/proxypool/config"
 	"github.com/ssrlive/proxypool/internal/cache"
 	"github.com/ssrlive/proxypool/internal/database"
@@ -10,8 +13,6 @@ import (
 	"github.com/ssrlive/proxypool/pkg/healthcheck"
 	"github.com/ssrlive/proxypool/pkg/provider"
 	"github.com/ssrlive/proxypool/pkg/proxy"
-	"sync"
-	"time"
 )
 
 var location, _ = time.LoadLocation("PRC")

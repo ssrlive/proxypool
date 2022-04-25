@@ -23,8 +23,6 @@ func main() {
 	//	http.ListenAndServe("0.0.0.0:6060", nil)
 	//}()
 
-	os.Chdir(fullDirOfExecutable())
-
 	flag.StringVar(&configFilePath, "c", "", "path to config file: config.yaml")
 	flag.BoolVar(&debugMode, "d", false, "debug output")
 	flag.Parse()
@@ -45,6 +43,8 @@ func main() {
 		log.Errorln("Configuration init error: %s", err.Error())
 		panic(err)
 	}
+
+	os.Chdir(fullDirOfExecutable())
 
 	database.InitTables()
 	// init GeoIp db reader and map between emoji's and countries

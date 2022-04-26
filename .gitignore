@@ -1,6 +1,7 @@
 # Binaries for programs and plugins
 go.sum
 proxypool
+__debug_bin
 *.exe
 *.exe~
 *.dll

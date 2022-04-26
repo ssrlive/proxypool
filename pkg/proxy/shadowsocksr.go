@@ -20,6 +20,8 @@ var (
 	ErrorMissingQuery           = errors.New("link missing query")
 	ErrorProtocolParamParseFail = errors.New("protocol param parse failed")
 	ErrorObfsParamParseFail     = errors.New("obfs param parse failed")
+	ErrorOtDomainParseFail      = errors.New("ot_domain parse failed")
+	ErrorOtPathParseFail        = errors.New("ot_path parse failed")
 )
 
 // 字段依据clash的配置设计
@@ -31,6 +33,9 @@ type ShadowsocksR struct {
 	ProtocolParam string `yaml:"protocol-param,omitempty" json:"protocol-param,omitempty"`
 	Obfs          string `yaml:"obfs" json:"obfs"`
 	ObfsParam     string `yaml:"obfs-param,omitempty" json:"obfs-param,omitempty"`
+	Ot_enable     int    `yaml:"ot_enable" json:"ot_enable"`
+	Ot_domain     string `yaml:"ot_domain,omitempty" json:"ot_domain,omitempty"`
+	Ot_path       string `yaml:"ot_path,omitempty" json:"ot_path,omitempty"`
 }
 
 func (ssr ShadowsocksR) Identifier() string {
@@ -46,11 +51,12 @@ func (ssr ShadowsocksR) String() string {
 }
 
 func (ssr ShadowsocksR) ToClash() string {
-	data, err := json.Marshal(ssr)
-	if err != nil {
+	theString := ssr.String()
+	if len(theString) > 0 {
+		return "- " + theString
+	} else {
 		return ""
 	}
-	return "- " + string(data)
 }
 
 func (ssr ShadowsocksR) ToSurge() string {
@@ -111,18 +117,24 @@ func ParseSSRLink(link string) (*ShadowsocksR, error) {
 	moreInfo, _ := url.ParseQuery(infoPayload[1])
 
 	// remarks
-	//remarks := moreInfo.Get("remarks")
-	//remarks, err = tool.Base64DecodeString(remarks)
+	//remarks, err := tool.Base64DecodeString(moreInfo.Get("remarks"))
 	//if err != nil {
 	//	remarks = ""
 	//	err = nil
 	//}
-	//if strings.ContainsAny(remarks, "\t\r\n ") {
+	//if strings.ContainsAny(remarks, "\t\r\n") {
 	//	remarks = strings.ReplaceAll(remarks, "\t", "")
 	//	remarks = strings.ReplaceAll(remarks, "\r", "")
 	//	remarks = strings.ReplaceAll(remarks, "\n", "")
-	//	remarks = strings.ReplaceAll(remarks, " ", "")
 	//}
+	//if strings.ContainsAny(remarks, ":/.- ") {
+	//	remarks = strings.ReplaceAll(remarks, ":", "_")
+	//	remarks = strings.ReplaceAll(remarks, "/", "_")
+	//	remarks = strings.ReplaceAll(remarks, ".", "_")
+	//	remarks = strings.ReplaceAll(remarks, "-", "_")
+	//	remarks = strings.ReplaceAll(remarks, " ", "_")
+	//}
+	//remarks = tool.ReplaceChineseCharWith(remarks, "_")
 
 	// protocol param
 	protocolParam, err := tool.Base64DecodeString(moreInfo.Get("protoparam"))
@@ -148,6 +160,24 @@ func ParseSSRLink(link string) (*ShadowsocksR, error) {
 		obfs = strings.ReplaceAll(obfs, "_compatible", "")
 	}
 
+	// ot_enable
+	ot_enable, err := strconv.Atoi(moreInfo.Get("ot_enable"))
+	if err != nil {
+		ot_enable = 0
+	}
+
+	// ot_domain
+	ot_domain, err := tool.Base64DecodeString(moreInfo.Get("ot_domain"))
+	if err != nil {
+		ot_domain = ""
+	}
+
+	// ot_path
+	ot_path, err := tool.Base64DecodeString(moreInfo.Get("ot_path"))
+	if err != nil {
+		ot_path = ""
+	}
+
 	return &ShadowsocksR{
 		Base: Base{
 			Name:   "",
@@ -161,6 +191,9 @@ func ParseSSRLink(link string) (*ShadowsocksR, error) {
 		ProtocolParam: protocolParam,
 		Obfs:          obfs,
 		ObfsParam:     obfsParam,
+		Ot_enable:     ot_enable,
+		Ot_domain:     ot_domain,
+		Ot_path:       ot_path,
 	}, nil
 }
 

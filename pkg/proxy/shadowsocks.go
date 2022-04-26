@@ -88,6 +88,8 @@ func ParseSSLink(link string) (*Shadowsocks, error) {
 		return nil, ErrorNotSSLink
 	}
 
+	remarks := uri.Fragment
+
 	cipher := ""
 	password := ""
 	if uri.User.String() == "" {
@@ -142,7 +144,7 @@ func ParseSSLink(link string) (*Shadowsocks, error) {
 
 	return &Shadowsocks{
 		Base: Base{
-			Name:   "",
+			Name:   remarks,
 			Server: server,
 			Port:   port,
 			Type:   "ss",

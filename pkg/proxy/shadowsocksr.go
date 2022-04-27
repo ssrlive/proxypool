@@ -33,7 +33,7 @@ type ShadowsocksR struct {
 	ProtocolParam string `yaml:"protocol-param,omitempty" json:"protocol-param,omitempty"`
 	Obfs          string `yaml:"obfs" json:"obfs"`
 	ObfsParam     string `yaml:"obfs-param,omitempty" json:"obfs-param,omitempty"`
-	Ot_enable     int    `yaml:"ot_enable" json:"ot_enable"`
+	Ot_enable     int    `yaml:"ot_enable,omitempty" json:"ot_enable,omitempty"`
 	Ot_domain     string `yaml:"ot_domain,omitempty" json:"ot_domain,omitempty"`
 	Ot_path       string `yaml:"ot_path,omitempty" json:"ot_path,omitempty"`
 }
@@ -76,6 +76,11 @@ func (ssr ShadowsocksR) Link() (link string) {
 	query.Add("protoparam", tool.Base64EncodeString(ssr.ProtocolParam, true))
 	//query.Add("remarks", tool.Base64EncodeString(ssr.Name, true))
 	query.Add("group", tool.Base64EncodeString("proxypoolss.herokuapp.com", true))
+	if ssr.Ot_enable != 0 {
+		query.Add("ot_enable", "1")
+		query.Add("ot_domain", tool.Base64EncodeString(ssr.Ot_domain, true))
+		query.Add("ot_path", tool.Base64EncodeString(ssr.Ot_path, true))
+	}
 	payload = tool.Base64EncodeString(fmt.Sprintf("%s/?%s", payload, query.Encode()), true)
 	return fmt.Sprintf("ssr://%s", payload)
 }

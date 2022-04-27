@@ -163,11 +163,7 @@ func GoodNodeThatClashUnsupported(b Proxy) bool {
 		if ssr == nil {
 			return false
 		}
-		if ssr.Cipher == "none" || ssr.Ot_enable != 0 {
-			return true
-		} else {
-			return false
-		}
+		return true
 	}
 	return false
 }

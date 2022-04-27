@@ -4,10 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/ssrlive/proxypool/log"
-	"github.com/ssrlive/proxypool/pkg/proxy"
+	"net"
 	"sync"
 	"time"
+
+	"github.com/ssrlive/proxypool/log"
+	"github.com/ssrlive/proxypool/pkg/proxy"
 
 	"github.com/ivpusic/grpool"
 
@@ -79,6 +81,16 @@ func testDelay(p proxy.Proxy) (delay uint16, err error) {
 		pmap["alterId"] = int(pmap["alterId"].(float64))
 	}
 
+	if proxy.GoodNodeThatClashUnsupported(p) {
+		host := pmap["server"].(string)
+		port := fmt.Sprint(pmap["port"].(int))
+		if result, err := netConnectivity(host, port); result {
+			return 200, err
+		} else {
+			return 0, err
+		}
+	}
+
 	clashProxy, err := adapter.ParseProxy(pmap)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -121,4 +133,17 @@ func testDelay(p proxy.Proxy) (delay uint16, err error) {
 		m.Unlock()
 		return 0, context.DeadlineExceeded
 	}
+}
+
+func netConnectivity(host string, port string) (bool, error) {
+	result := false
+	timeout := time.Second
+	conn, err := net.DialTimeout("tcp", net.JoinHostPort(host, port), timeout)
+	if err == nil {
+		result = true
+	}
+	if conn != nil {
+		defer conn.Close()
+	}
+	return result, err
 }

@@ -3,8 +3,9 @@ package proxy
 import (
 	"encoding/json"
 	"errors"
-	"github.com/ssrlive/proxypool/pkg/geoIp"
 	"strings"
+
+	"github.com/ssrlive/proxypool/pkg/geoIp"
 )
 
 /* Base implements interface Proxy. It's the basic proxy struct. Vmess etc extends Base*/
@@ -143,4 +144,30 @@ func ParseProxyFromClashProxy(p map[string]interface{}) (proxy Proxy, err error)
 		return &proxy, nil
 	}
 	return nil, errors.New("clash json parse failed")
+}
+
+func GoodNodeThatClashUnsupported(b Proxy) bool {
+	switch b.TypeName() {
+	case "ss":
+		ss := b.(*Shadowsocks)
+		if ss == nil {
+			return false
+		}
+		if ss.Cipher == "none" {
+			return true
+		} else {
+			return false
+		}
+	case "ssr":
+		ssr := b.(*ShadowsocksR)
+		if ssr == nil {
+			return false
+		}
+		if ssr.Cipher == "none" || ssr.Ot_enable != 0 {
+			return true
+		} else {
+			return false
+		}
+	}
+	return false
 }

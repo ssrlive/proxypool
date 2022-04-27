@@ -94,7 +94,7 @@ func testRelay(p proxy.Proxy) (outip string, err error) {
 	}
 
 	if proxy.GoodNodeThatClashUnsupported(p) {
-		ihost := pmap["server"].(string)
+		host := pmap["server"].(string)
 		port := fmt.Sprint(pmap["port"].(int))
 		if result, err := netConnectivity(host, port); result {
 			return "some fake info", nil

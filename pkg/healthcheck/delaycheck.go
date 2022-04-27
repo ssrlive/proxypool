@@ -85,7 +85,7 @@ func testDelay(p proxy.Proxy) (delay uint16, err error) {
 		host := pmap["server"].(string)
 		port := fmt.Sprint(pmap["port"].(int))
 		if result, err := netConnectivity(host, port); result {
-			return 200, err
+			return 200, nil
 		} else {
 			return 0, err
 		}

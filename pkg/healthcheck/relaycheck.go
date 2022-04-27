@@ -8,9 +8,9 @@ import (
 	"sync"
 
 	"github.com/Dreamacro/clash/adapter"
+	"github.com/ivpusic/grpool"
 	"github.com/ssrlive/proxypool/log"
 	"github.com/ssrlive/proxypool/pkg/proxy"
-	"github.com/ivpusic/grpool"
 )
 
 func RelayCheck(proxies proxy.ProxyList) {
@@ -90,6 +90,16 @@ func testRelay(p proxy.Proxy) (outip string, err error) {
 		pmap["alterId"] = int(pmap["alterId"].(float64))
 		if network, ok := pmap["network"]; ok && network.(string) == "h2" {
 			return "", nil // todo 暂无方法测试h2的延迟，clash对于h2的connection会阻塞
+		}
+	}
+
+	if proxy.GoodNodeThatClashUnsupported(p) {
+		ihost := pmap["server"].(string)
+		port := fmt.Sprint(pmap["port"].(int))
+		if result, err := netConnectivity(host, port); result {
+			return "some fake info", nil
+		} else {
+			return "", err
 		}
 	}
 

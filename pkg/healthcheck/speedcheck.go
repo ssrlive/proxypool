@@ -13,9 +13,9 @@ import (
 
 	"github.com/Dreamacro/clash/adapter"
 	C "github.com/Dreamacro/clash/constant"
+	"github.com/ivpusic/grpool"
 	"github.com/ssrlive/proxypool/log"
 	"github.com/ssrlive/proxypool/pkg/proxy"
-	"github.com/ivpusic/grpool"
 )
 
 // SpeedTestAll tests speed of a group of proxies. Results are stored in ProxyStats
@@ -145,6 +145,16 @@ func ProxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 		pmap["alterId"] = int(pmap["alterId"].(float64))
 		if network, ok := pmap["network"]; ok && network.(string) == "h2" {
 			return 0, nil // todo 暂无方法测试h2的速度，clash对于h2的connection会阻塞
+		}
+	}
+
+	if proxy.GoodNodeThatClashUnsupported(p) {
+		host := pmap["server"].(string)
+		port := fmt.Sprint(pmap["port"].(int))
+		if result, err := netConnectivity(host, port); result {
+			return 200000, nil
+		} else {
+			return -1, err
 		}
 	}
 

@@ -1,8 +1,6 @@
 package api
 
 import (
-	binhtml "github.com/ssrlive/proxypool/internal/bindata/html"
-	"github.com/ssrlive/proxypool/log"
 	"html/template"
 	"net/http"
 	"os"
@@ -10,16 +8,19 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ssrlive/proxypool/config"
-	appcache "github.com/ssrlive/proxypool/internal/cache"
-	"github.com/ssrlive/proxypool/pkg/provider"
+	binhtml "github.com/ssrlive/proxypool/internal/bindata/html"
+	"github.com/ssrlive/proxypool/log"
+
 	"github.com/gin-contrib/cache"
 	"github.com/gin-contrib/cache/persistence"
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"
+	"github.com/ssrlive/proxypool/config"
+	appcache "github.com/ssrlive/proxypool/internal/cache"
+	"github.com/ssrlive/proxypool/pkg/provider"
 )
 
-const version = "v0.7.5"
+const version = "v0.7.6"
 
 var router *gin.Engine
 

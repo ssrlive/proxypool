@@ -137,7 +137,7 @@ func testDelay(p proxy.Proxy) (delay uint16, err error) {
 
 func netConnectivity(host string, port string) (bool, error) {
 	result := false
-	timeout := time.Second
+	timeout := time.Second * 3
 	conn, err := net.DialTimeout("tcp", net.JoinHostPort(host, port), timeout)
 	if err == nil {
 		result = true

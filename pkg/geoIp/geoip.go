@@ -10,13 +10,14 @@ import (
 	"path/filepath"
 
 	"github.com/oschwald/geoip2-golang"
+	"github.com/ssrlive/proxypool/config"
 	bingeoip "github.com/ssrlive/proxypool/internal/bindata/geoip"
 )
 
 var GeoIpDB GeoIP
 
 func InitGeoIpDB() error {
-	parentPath, _ := os.Getwd()
+	parentPath := config.ResourceRoot()
 	geodbPath := "assets/GeoLite2-City.mmdb"
 	flagsPath := "assets/flags.json"
 	geodb := filepath.Join(parentPath, geodbPath)

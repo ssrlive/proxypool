@@ -4,7 +4,6 @@ import (
 	"flag"
 	_ "net/http/pprof"
 	"os"
-	"path/filepath"
 
 	"github.com/ssrlive/proxypool/pkg/geoIp"
 
@@ -47,8 +46,6 @@ func main() {
 	exe, _ := os.Executable()
 	log.Infoln("Running image path: %s", exe)
 
-	os.Chdir(fullDirOfExecutable())
-
 	database.InitTables()
 	// init GeoIp db reader and map between emoji's and countries
 	// return: struct geoIp (dbreader, emojimap)
@@ -60,13 +57,4 @@ func main() {
 	go app.CrawlGo() // 抓取主程序
 	go cron.Cron()   // 定时运行
 	api.Run()        // Web Serve
-}
-
-func fullDirOfExecutable() string {
-	exePath, err := os.Executable()
-	if err != nil {
-		panic(err)
-	}
-	res, _ := filepath.EvalSymlinks(filepath.Dir(exePath))
-	return res
 }

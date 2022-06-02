@@ -5,6 +5,9 @@ import (
 	"errors"
 	"io/ioutil"
 	"os"
+	"path/filepath"
+	"runtime"
+	"runtime/debug"
 	"strings"
 
 	"github.com/ssrlive/proxypool/log"
@@ -126,5 +129,48 @@ func ReadFile(path string) ([]byte, error) {
 			return nil, err
 		}
 		return ioutil.ReadFile(path)
+	}
+}
+
+func fullDirOfExecutable() string {
+	exePath, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	res, _ := filepath.EvalSymlinks(filepath.Dir(exePath))
+	return res
+}
+
+func moduleName() string {
+	info, _ := debug.ReadBuildInfo()
+	_, name := filepath.Split(info.Main.Path)
+	return name
+}
+
+// 返回資源文件所在的根目錄.
+func ResourceRoot() string {
+	exe, _ := os.Executable()
+	_, file := filepath.Split(exe)
+
+	currDir, _ := os.Getwd()
+	exeDir := fullDirOfExecutable()
+	if exeDir != currDir {
+		// 從 go run 運行, 或者從 別的目錄 運行.
+		module := moduleName()
+		os := runtime.GOOS
+		if os == "windows" {
+			module = module + ".exe"
+		}
+		if file == module {
+			// 可執行文件在別的目錄運行.
+			return exeDir
+		} else {
+			// 從 go run 運行, 可執行文件生成在臨時目錄,
+			// 於是返回當前目錄作爲資源根目錄.
+			return currDir
+		}
+	} else {
+		// 從 exe 所在目錄運行.
+		return exeDir
 	}
 }

@@ -48,14 +48,32 @@ func (config ConfigOptions) HostUrl() string {
 	return url
 }
 
+func ConfigFilePath() string {
+	return configFilePath
+}
+
+func configFileFullPath(path string) string {
+	if filepath.IsAbs(path) {
+		return path
+	}
+	exPath, _ := os.Getwd()
+
+	return filepath.Join(exPath, path)
+}
+
+func extractFullPath(path string) string {
+	if IsLocalFile(path) {
+		path = configFileFullPath(path)
+	}
+	return path
+}
+
 // Parse 解析配置文件，支持本地文件系统和网络链接
 func Parse(path string) error {
-	if path == "" {
-		path = configFilePath
-	} else {
-		configFilePath = path
+	if path != "" {
+		configFilePath = extractFullPath(path)
 	}
-	fileData, err := ReadFile(path)
+	fileData, err := ReadFile(configFilePath)
 	if err != nil {
 		return err
 	}

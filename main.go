@@ -14,10 +14,11 @@ import (
 	"github.com/ssrlive/proxypool/log"
 )
 
-var configFilePath = ""
 var debugMode = false
 
 func main() {
+	var configFilePath = ""
+
 	//go func() {
 	//	http.ListenAndServe("0.0.0.0:6060", nil)
 	//}()
@@ -37,8 +38,6 @@ func main() {
 	if configFilePath == "" {
 		configFilePath = "config.yaml"
 	}
-
-	app.SetConfigFilePath(configFilePath)
 
 	err := app.InitConfigAndGetters(configFilePath)
 	if err != nil {

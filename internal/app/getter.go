@@ -2,7 +2,6 @@ package app
 
 import (
 	"errors"
-	"os"
 	"path/filepath"
 
 	"github.com/ssrlive/proxypool/log"
@@ -17,31 +16,7 @@ import (
 
 var Getters = make([]getter.Getter, 0)
 
-var configFilePath = ""
-
-func SetConfigFilePath(path string) {
-	configFilePath = path
-}
-
-func ConfigFilePath() string {
-	return configFilePath
-}
-
-func configFileFullPath(path string) string {
-	if filepath.IsAbs(path) {
-		return path
-	}
-	exPath, _ := os.Getwd()
-
-	return filepath.Join(exPath, path)
-}
-
 func InitConfigAndGetters(path string) (err error) {
-	var configDir string
-	if config.IsLocalFile(path) {
-		path = configFileFullPath(path)
-		configDir = filepath.Dir(path)
-	}
 	err = config.Parse(path)
 	if err != nil {
 		return
@@ -51,6 +26,7 @@ func InitConfigAndGetters(path string) (err error) {
 	} else {
 		for index, path := range s {
 			if config.IsLocalFile(path) && !filepath.IsAbs(path) {
+				var configDir = filepath.Dir(config.ConfigFilePath())
 				s[index] = filepath.Join(configDir, path)
 			}
 		}

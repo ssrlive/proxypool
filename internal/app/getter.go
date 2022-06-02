@@ -17,6 +17,16 @@ import (
 
 var Getters = make([]getter.Getter, 0)
 
+var configFilePath = ""
+
+func SetConfigFilePath(path string) {
+	configFilePath = path
+}
+
+func ConfigFilePath() string {
+	return configFilePath
+}
+
 func configFileFullPath(path string) string {
 	if filepath.IsAbs(path) {
 		return path

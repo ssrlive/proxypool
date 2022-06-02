@@ -37,6 +37,9 @@ func main() {
 	if configFilePath == "" {
 		configFilePath = "config.yaml"
 	}
+
+	app.SetConfigFilePath(configFilePath)
+
 	err := app.InitConfigAndGetters(configFilePath)
 	if err != nil {
 		log.Errorln("Configuration init error: %s", err.Error())

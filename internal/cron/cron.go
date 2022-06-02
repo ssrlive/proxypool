@@ -1,15 +1,16 @@
 package cron
 
 import (
+	"runtime"
+
 	"github.com/ssrlive/proxypool/config"
 	"github.com/ssrlive/proxypool/internal/cache"
 	"github.com/ssrlive/proxypool/log"
 	"github.com/ssrlive/proxypool/pkg/healthcheck"
 	"github.com/ssrlive/proxypool/pkg/provider"
-	"runtime"
 
-	"github.com/ssrlive/proxypool/internal/app"
 	"github.com/jasonlvhit/gocron"
+	"github.com/ssrlive/proxypool/internal/app"
 )
 
 func Cron() {
@@ -20,7 +21,7 @@ func Cron() {
 }
 
 func crawlTask() {
-	err := app.InitConfigAndGetters("")
+	err := app.InitConfigAndGetters(app.ConfigFilePath())
 	if err != nil {
 		log.Errorln("[cron.go] config parse error: %s", err)
 	}
@@ -31,7 +32,7 @@ func crawlTask() {
 
 func speedTestTask() {
 	log.Infoln("Doing speed test task...")
-	err := config.Parse("")
+	err := config.Parse(app.ConfigFilePath())
 	if err != nil {
 		log.Errorln("[cron.go] config parse error: %s", err)
 	}
@@ -53,7 +54,7 @@ func speedTestTask() {
 
 func frequentSpeedTestTask() {
 	log.Infoln("Doing speed test task for active proxies...")
-	err := config.Parse("")
+	err := config.Parse(app.ConfigFilePath())
 	if err != nil {
 		log.Errorln("[cron.go] config parse error: %s", err)
 	}

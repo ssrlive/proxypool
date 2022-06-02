@@ -44,6 +44,9 @@ func main() {
 		panic(err)
 	}
 
+	exe, _ := os.Executable()
+	log.Infoln("Running image path: %s", exe)
+
 	os.Chdir(fullDirOfExecutable())
 
 	database.InitTables()

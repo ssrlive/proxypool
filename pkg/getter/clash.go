@@ -2,6 +2,8 @@ package getter
 
 import (
 	"io/ioutil"
+	"regexp"
+	"strings"
 	"sync"
 
 	"github.com/ssrlive/proxypool/log"
@@ -33,6 +35,8 @@ func (c *Clash) Get() proxy.ProxyList {
 		return nil
 	}
 
+	body = buildClashDoc(false, body)
+
 	conf := config{}
 	err = yaml.Unmarshal(body, &conf)
 	if err != nil {
@@ -41,6 +45,36 @@ func (c *Clash) Get() proxy.ProxyList {
 
 	return ClashProxy2ProxyArray(conf.Proxy)
 
+}
+
+//
+// clash 文檔有效性檢查
+//
+func buildClashDoc(fullcheck bool, body []byte) []byte {
+	// 這個正則表達式的設計很粗糙，對嵌套大括號 {{}} 檢測失靈，
+	// 但這裏不用精確判斷，糊弄過去。
+	regexp, _ := regexp.Compile(`{\s*name:[^,]+,\s*server:\s*\S+,\s*port:\s*\d+\s*,\s*type:[^}]+}`)
+
+	tmp := strings.Split(strings.ReplaceAll(string(body), "\r\n", "\n"), "\n")
+	var arr []string
+	for index, s0 := range tmp {
+		if !fullcheck && index == 0 && s0 == "proxies:" {
+			// 如果第一行就是 "proxies:" 字符串, 就假設 body 是合法的 clash 訂閱文本,
+			// 出於性能考慮, 不再進一步檢查, 直接返回.
+			return body
+		}
+		match := regexp.FindStringIndex(s0)
+		if match != nil {
+			arr = append(arr, s0)
+		}
+	}
+
+	if len(arr) == 0 {
+		return []byte("")
+	}
+	arr = append([]string{"proxies:"}, arr...)
+
+	return []byte(strings.Join(arr, "\n"))
 }
 
 func (c *Clash) Get2Chan(pc chan proxy.Proxy) {

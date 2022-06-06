@@ -46,7 +46,9 @@ func checkClashSupport(p proxy.Proxy) bool {
 	switch p.TypeName() {
 	case "ssr":
 		ssr := p.(*proxy.ShadowsocksR)
-		if tool.CheckInList(proxy.SSRCipherList, ssr.Cipher) && tool.CheckInList(ssrProtocolList, ssr.Protocol) && tool.CheckInList(ssrObfsList, ssr.Obfs) {
+		if tool.CheckInList(proxy.SSRCipherList, ssr.Cipher) &&
+			tool.CheckInList(ssrProtocolList, ssr.Protocol) &&
+			tool.CheckInList(ssrObfsList, ssr.Obfs) {
 			return true
 		}
 	case "vmess":

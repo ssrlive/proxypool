@@ -9,6 +9,7 @@ tmp/
 go.sum
 .vscode/
 proxypool
+__debug_bin
 
 # Test binary, build with `go test -c`
 *.test

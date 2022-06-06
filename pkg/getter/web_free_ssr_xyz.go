@@ -36,7 +36,7 @@ func (w *WebFreessrXyz) Get() proxy.ProxyList {
 func (w *WebFreessrXyz) Get2ChanWG(pc chan proxy.Proxy, wg *sync.WaitGroup) {
 	defer wg.Done()
 	nodes := w.Get()
-	log.Infoln("STATISTIC: FreeSSRxyz\tcount=%d\turl=%s\n", len(nodes), "api.free-ssr.xyz")
+	log.Infoln("STATISTIC: FreeSSRxyz\tcount=%d\turl=%s", len(nodes), "api.free-ssr.xyz")
 	for _, node := range nodes {
 		pc <- node
 	}
@@ -44,7 +44,7 @@ func (w *WebFreessrXyz) Get2ChanWG(pc chan proxy.Proxy, wg *sync.WaitGroup) {
 
 func (w *WebFreessrXyz) Get2Chan(pc chan proxy.Proxy) {
 	nodes := w.Get()
-	log.Infoln("STATISTIC: FreeSSRxyz\tcount=%d\turl=%s\n", len(nodes), "api.free-ssr.xyz")
+	log.Infoln("STATISTIC: FreeSSRxyz\tcount=%d\turl=%s", len(nodes), "api.free-ssr.xyz")
 	for _, node := range nodes {
 		pc <- node
 	}

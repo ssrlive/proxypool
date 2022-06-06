@@ -6,13 +6,13 @@
 
 <p align="center">
   <a href="https://github.com/ssrlive/proxypool/actions">
-    <img src="https://img.shields.io/github/workflow/status/ssrlive/proxypool/Go?style=flat-square" alt="Github Actions">
+    <img src="https://img.shields.io/github/workflow/status/zu1k/proxypool/Go?style=flat-square" alt="Github Actions">
   </a>
   <a href="https://goreportcard.com/report/github.com/ssrlive/proxypool">
     <img src="https://goreportcard.com/badge/github.com/ssrlive/proxypool?style=flat-square">
   </a>
   <a href="https://github.com/ssrlive/proxypool/releases">
-    <img src="https://img.shields.io/github/release/ssrlive/proxypool/all.svg?style=flat-square">
+    <img src="https://img.shields.io/github/release/zu1k/proxypool/all.svg?style=flat-square">
   </a>
 </p>
 
@@ -55,27 +55,31 @@
 
 ### 3. 从源码编译
 
-需要安装Golang
+需要 [安装 Golang](https://golang.org/doc/install) ， 然后拉取代码,
 
-```shell
-$ go get -u -v github.com/ssrlive/proxypool
+```bash
+go get -u -v github.com/ssrlive/proxypool@latest
 ```
 
-运行
-
-```shell
-$ go run main.go -c ./config/config.yaml
+或者，拉取代码的另一种方式 
 ```
-
-编译
-
-```shell
-$ make
+git clone https://github.com/ssrlive/proxypool.git
+cd proxypool
+go get
+go build
+```
+then edit `config/config.yaml` and `config/source.yaml` and run it
+```
+./proxypool -c ./config/config.yaml
+```
+或者从源代码运行
+```
+go run main.go -c ./config/config.yaml
 ```
 
 ### 4. 下载预编译程序
 
-从这里下载预编译好的程序 [release](https://github.com/ssrlive/proxypool/releases)。
+从这里下载预编译好的程序 [release](https://github.com/ssrlive/proxypool/releases)
 
 ### 5. 使用docker
 
@@ -106,7 +110,11 @@ $ docker run -d --restart=always \
 
 ### 修改配置文件
 
-首先修改 config.yaml 中的必要配置信息。带有默认值的字段均可不填写。完整的配置选项见[配置文件说明](https://github.com/ssrlive/proxypool/wiki/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E)
+首先修改 config.yaml 中的必要配置信息，带有默认值的字段均可不填写
+
+source.yaml 文件中定义了抓取源，需要定期手动维护更新
+
+完整的配置选项见[配置文件说明](https://github.com/ssrlive/proxypool/wiki/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E)
 
 ### 启动程序
 

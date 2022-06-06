@@ -45,7 +45,7 @@ func (c *Clash) Get() proxy.ProxyList {
 
 func (c *Clash) Get2Chan(pc chan proxy.Proxy) {
 	nodes := c.Get()
-	log.Infoln("STATISTIC: Clash\tcount=%d\turl=%s\n", len(nodes), c.Url)
+	log.Infoln("STATISTIC: Clash\tcount=%d\turl=%s", len(nodes), c.Url)
 	for _, node := range nodes {
 		pc <- node
 	}
@@ -54,7 +54,7 @@ func (c *Clash) Get2Chan(pc chan proxy.Proxy) {
 func (c *Clash) Get2ChanWG(pc chan proxy.Proxy, wg *sync.WaitGroup) {
 	defer wg.Done()
 	nodes := c.Get()
-	log.Infoln("STATISTIC: Clash\tcount=%d\turl=%s\n", len(nodes), c.Url)
+	log.Infoln("STATISTIC: Clash\tcount=%d\turl=%s", len(nodes), c.Url)
 	for _, node := range nodes {
 		pc <- node
 	}

@@ -50,6 +50,9 @@ func initGetters(sourceFiles []string) {
 			continue
 		}
 		for _, source := range sourceList {
+			if source.Options == nil {
+				continue
+			}
 			g, err := getter.NewGetter(source.Type, source.Options)
 			if err == nil && g != nil {
 				Getters = append(Getters, g)

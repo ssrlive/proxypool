@@ -33,7 +33,7 @@ func Convert2SSR(p Proxy) (ssr *ShadowsocksR, err error) {
 
 // Convert2SS convert proxy to Shadowsocks if possible
 func Convert2SS(p Proxy) (ss *Shadowsocks, err error) {
-	if p.TypeName() == "ss" {
+	if p.TypeName() == "ssr" {
 		ssr := p.(*ShadowsocksR)
 		if ssr == nil {
 			return nil, errors.New("ssr is nil")

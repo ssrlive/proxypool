@@ -52,8 +52,9 @@ func (ps ProxyList) Deduplication() ProxyList {
 	temp := map[string]struct{}{}
 	for _, item := range ps {
 		if item != nil {
-			if _, ok := temp[item.Identifier()]; !ok {
-				temp[item.Identifier()] = struct{}{}
+			nodeID := item.Identifier()
+			if _, ok := temp[nodeID]; !ok {
+				temp[nodeID] = struct{}{}
 				result = append(result, item)
 			}
 		}

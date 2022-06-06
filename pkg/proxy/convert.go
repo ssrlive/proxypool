@@ -41,7 +41,7 @@ func Convert2SS(p Proxy) (ss *Shadowsocks, err error) {
 		if !tool.CheckInList(SSCipherList, ssr.Cipher) {
 			return nil, errors.New("cipher not support")
 		}
-		if ssr.Protocol != "origin" || ssr.Obfs != "plain" {
+		if ssr.Protocol != "origin" || ssr.Obfs != "plain" || ssr.Ot_enable != 0 {
 			return nil, errors.New("protocol or obfs not allowed")
 		}
 		base := ssr.Base

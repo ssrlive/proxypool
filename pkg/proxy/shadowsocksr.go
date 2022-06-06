@@ -20,6 +20,8 @@ var (
 	ErrorMissingQuery           = errors.New("link missing query")
 	ErrorProtocolParamParseFail = errors.New("protocol param parse failed")
 	ErrorObfsParamParseFail     = errors.New("obfs param parse failed")
+	ErrorOtDomainParseFail      = errors.New("ot_domain parse failed")
+	ErrorOtPathParseFail        = errors.New("ot_path parse failed")
 )
 
 // 字段依据clash的配置设计
@@ -31,6 +33,9 @@ type ShadowsocksR struct {
 	ProtocolParam string `yaml:"protocol-param,omitempty" json:"protocol-param,omitempty"`
 	Obfs          string `yaml:"obfs" json:"obfs"`
 	ObfsParam     string `yaml:"obfs-param,omitempty" json:"obfs-param,omitempty"`
+	Ot_enable     int    `yaml:"ot_enable,omitempty" json:"ot_enable,omitempty"`
+	Ot_domain     string `yaml:"ot_domain,omitempty" json:"ot_domain,omitempty"`
+	Ot_path       string `yaml:"ot_path,omitempty" json:"ot_path,omitempty"`
 }
 
 func (ssr ShadowsocksR) Identifier() string {
@@ -71,6 +76,11 @@ func (ssr ShadowsocksR) Link() (link string) {
 	query.Add("protoparam", tool.Base64EncodeString(ssr.ProtocolParam, true))
 	//query.Add("remarks", tool.Base64EncodeString(ssr.Name, true))
 	query.Add("group", tool.Base64EncodeString("proxypoolss.herokuapp.com", true))
+	if ssr.Ot_enable != 0 {
+		query.Add("ot_enable", "1")
+		query.Add("ot_domain", tool.Base64EncodeString(ssr.Ot_domain, true))
+		query.Add("ot_path", tool.Base64EncodeString(ssr.Ot_path, true))
+	}
 	payload = tool.Base64EncodeString(fmt.Sprintf("%s/?%s", payload, query.Encode()), true)
 	return fmt.Sprintf("ssr://%s", payload)
 }
@@ -123,6 +133,9 @@ func ParseSSRLink(link string) (*ShadowsocksR, error) {
 			ProtocolParam: "",
 			Obfs:          obfs,
 			ObfsParam:     "",
+			Ot_enable:     0,
+			Ot_domain:     "",
+			Ot_path:       "",
 		}, nil
 	}
 
@@ -172,6 +185,24 @@ func ParseSSRLink(link string) (*ShadowsocksR, error) {
 		obfs = strings.ReplaceAll(obfs, "_compatible", "")
 	}
 
+	// ot_enable
+	ot_enable, err := strconv.Atoi(moreInfo.Get("ot_enable"))
+	if err != nil {
+		ot_enable = 0
+	}
+
+	// ot_domain
+	ot_domain, err := tool.Base64DecodeString(moreInfo.Get("ot_domain"))
+	if err != nil {
+		ot_domain = ""
+	}
+
+	// ot_path
+	ot_path, err := tool.Base64DecodeString(moreInfo.Get("ot_path"))
+	if err != nil {
+		ot_path = ""
+	}
+
 	return &ShadowsocksR{
 		Base: Base{
 			Name:   "",
@@ -185,6 +216,9 @@ func ParseSSRLink(link string) (*ShadowsocksR, error) {
 		ProtocolParam: protocolParam,
 		Obfs:          obfs,
 		ObfsParam:     obfsParam,
+		Ot_enable:     ot_enable,
+		Ot_domain:     ot_domain,
+		Ot_path:       ot_path,
 	}, nil
 }
 

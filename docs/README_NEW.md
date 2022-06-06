@@ -94,7 +94,7 @@ Clash客户端支持：
 
 2020-10-26
 - 单独分离出healthcheck模块
-- 分离出用于本地检测proxypool可用性的部分，见[proxypoolCheck](https://github.com/Sansui233/proxypoolCheck)项目
+- 分离出用于本地检测proxypool可用性的部分，见[proxypoolCheck](https://github.com/ssrlive/proxypoolCheck)项目
 
 2020-10-24
 - Vmess动态格式解析，对链接的字段类型进行强制转换（可以爬到更多节点）

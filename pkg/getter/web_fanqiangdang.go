@@ -2,13 +2,14 @@ package getter
 
 import (
 	"fmt"
-	"github.com/Sansui233/proxypool/log"
 	"strings"
 	"sync"
 
-	"github.com/Sansui233/proxypool/pkg/proxy"
-	"github.com/Sansui233/proxypool/pkg/tool"
+	"github.com/ssrlive/proxypool/log"
+
 	"github.com/gocolly/colly"
+	"github.com/ssrlive/proxypool/pkg/proxy"
+	"github.com/ssrlive/proxypool/pkg/tool"
 )
 
 func init() {

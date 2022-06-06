@@ -4,10 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/Sansui233/proxypool/log"
-	"github.com/Sansui233/proxypool/pkg/proxy"
 	"sync"
 	"time"
+
+	"github.com/ssrlive/proxypool/log"
+	"github.com/ssrlive/proxypool/pkg/proxy"
 
 	"github.com/ivpusic/grpool"
 

@@ -3,8 +3,9 @@ package proxy
 import (
 	"encoding/json"
 	"errors"
-	"github.com/Sansui233/proxypool/pkg/geoIp"
 	"strings"
+
+	"github.com/ssrlive/proxypool/pkg/geoIp"
 )
 
 /* Base implements interface Proxy. It's the basic proxy struct. Vmess etc extends Base*/

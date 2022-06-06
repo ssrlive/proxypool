@@ -2,11 +2,12 @@ package provider
 
 import (
 	"encoding/json"
-	"github.com/Sansui233/proxypool/pkg/tool"
 	"strconv"
 	"strings"
 
-	"github.com/Sansui233/proxypool/pkg/proxy"
+	"github.com/ssrlive/proxypool/pkg/tool"
+
+	"github.com/ssrlive/proxypool/pkg/proxy"
 )
 
 type SSSub struct {

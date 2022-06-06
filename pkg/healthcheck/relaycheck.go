@@ -8,9 +8,9 @@ import (
 	"sync"
 
 	"github.com/Dreamacro/clash/adapters/outbound"
-	"github.com/Sansui233/proxypool/log"
-	"github.com/Sansui233/proxypool/pkg/proxy"
 	"github.com/ivpusic/grpool"
+	"github.com/ssrlive/proxypool/log"
+	"github.com/ssrlive/proxypool/pkg/proxy"
 )
 
 func RelayCheck(proxies proxy.ProxyList) {

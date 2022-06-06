@@ -2,16 +2,17 @@ package app
 
 import (
 	"fmt"
-	C "github.com/Sansui233/proxypool/config"
-	"github.com/Sansui233/proxypool/internal/cache"
-	"github.com/Sansui233/proxypool/internal/database"
-	"github.com/Sansui233/proxypool/log"
-	"github.com/Sansui233/proxypool/pkg/geoIp"
-	"github.com/Sansui233/proxypool/pkg/healthcheck"
-	"github.com/Sansui233/proxypool/pkg/provider"
-	"github.com/Sansui233/proxypool/pkg/proxy"
 	"sync"
 	"time"
+
+	C "github.com/ssrlive/proxypool/config"
+	"github.com/ssrlive/proxypool/internal/cache"
+	"github.com/ssrlive/proxypool/internal/database"
+	"github.com/ssrlive/proxypool/log"
+	"github.com/ssrlive/proxypool/pkg/geoIp"
+	"github.com/ssrlive/proxypool/pkg/healthcheck"
+	"github.com/ssrlive/proxypool/pkg/provider"
+	"github.com/ssrlive/proxypool/pkg/proxy"
 )
 
 var location, _ = time.LoadLocation("PRC")

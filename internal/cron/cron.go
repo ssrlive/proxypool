@@ -1,15 +1,16 @@
 package cron
 
 import (
-	"github.com/Sansui233/proxypool/config"
-	"github.com/Sansui233/proxypool/internal/cache"
-	"github.com/Sansui233/proxypool/log"
-	"github.com/Sansui233/proxypool/pkg/healthcheck"
-	"github.com/Sansui233/proxypool/pkg/provider"
 	"runtime"
 
-	"github.com/Sansui233/proxypool/internal/app"
+	"github.com/ssrlive/proxypool/config"
+	"github.com/ssrlive/proxypool/internal/cache"
+	"github.com/ssrlive/proxypool/log"
+	"github.com/ssrlive/proxypool/pkg/healthcheck"
+	"github.com/ssrlive/proxypool/pkg/provider"
+
 	"github.com/jasonlvhit/gocron"
+	"github.com/ssrlive/proxypool/internal/app"
 )
 
 func Cron() {

@@ -145,3 +145,25 @@ func ParseProxyFromClashProxy(p map[string]interface{}) (proxy Proxy, err error)
 	}
 	return nil, errors.New("clash json parse failed")
 }
+
+func GoodNodeThatClashUnsupported(b Proxy) bool {
+	switch b.TypeName() {
+	case "ss":
+		ss := b.(*Shadowsocks)
+		if ss == nil {
+			return false
+		}
+		if ss.Cipher == "none" {
+			return true
+		} else {
+			return false
+		}
+	case "ssr":
+		ssr := b.(*ShadowsocksR)
+		if ssr == nil {
+			return false
+		}
+		return true
+	}
+	return false
+}

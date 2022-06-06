@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net"
 	"sync"
 	"time"
 
@@ -80,6 +81,16 @@ func testDelay(p proxy.Proxy) (delay uint16, err error) {
 		pmap["alterId"] = int(pmap["alterId"].(float64))
 	}
 
+	if proxy.GoodNodeThatClashUnsupported(p) {
+		host := pmap["server"].(string)
+		port := fmt.Sprint(pmap["port"].(int))
+		if _, err := netConnectivity(host, port); err == nil {
+			return 200, nil
+		} else {
+			return 0, err
+		}
+	}
+
 	clashProxy, err := adapter.ParseProxy(pmap)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -122,4 +133,15 @@ func testDelay(p proxy.Proxy) (delay uint16, err error) {
 		m.Unlock()
 		return 0, context.DeadlineExceeded
 	}
+}
+
+func netConnectivity(host string, port string) (string, error) {
+	result := ""
+	timeout := time.Second * 3
+	conn, err := net.DialTimeout("tcp", net.JoinHostPort(host, port), timeout)
+	if conn != nil {
+		result, _, _ = net.SplitHostPort(conn.RemoteAddr().String())
+		defer conn.Close()
+	}
+	return result, err
 }

@@ -93,6 +93,16 @@ func testRelay(p proxy.Proxy) (outip string, err error) {
 		}
 	}
 
+	if proxy.GoodNodeThatClashUnsupported(p) {
+		host := pmap["server"].(string)
+		port := fmt.Sprint(pmap["port"].(int))
+		if result, err := netConnectivity(host, port); err == nil {
+			return result, nil
+		} else {
+			return "", err
+		}
+	}
+
 	clashProxy, err := adapter.ParseProxy(pmap)
 	if err != nil {
 		return "", err

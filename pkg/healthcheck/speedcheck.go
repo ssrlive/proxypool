@@ -148,6 +148,16 @@ func ProxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 		}
 	}
 
+	if proxy.GoodNodeThatClashUnsupported(p) {
+		host := pmap["server"].(string)
+		port := fmt.Sprint(pmap["port"].(int))
+		if _, err := netConnectivity(host, port); err == nil {
+			return 200000, nil
+		} else {
+			return -1, err
+		}
+	}
+
 	clashProxy, err := adapter.ParseProxy(pmap)
 	if err != nil {
 		return -1, err

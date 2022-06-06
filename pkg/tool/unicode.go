@@ -15,3 +15,15 @@ func ContainChineseChar(str string) bool {
 	}
 	return false
 }
+
+func ReplaceChineseCharWith(str string, newStr string) string {
+	result := ""
+	for _, r := range str {
+		if unicode.Is(unicode.Scripts["Han"], r) || (hanRe.MatchString(string(r))) {
+			result = result + newStr
+		} else {
+			result = result + string(r)
+		}
+	}
+	return result
+}

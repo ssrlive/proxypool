@@ -4,14 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"math/rand"
 	"net"
 	"net/url"
 	"regexp"
 	"strconv"
 	"strings"
 
-	"github.com/zu1k/proxypool/pkg/tool"
+	"github.com/Sansui233/proxypool/pkg/tool"
 )
 
 var (
@@ -23,15 +22,15 @@ var (
 	ErrorObfsParamParseFail     = errors.New("obfs param parse failed")
 )
 
+// 字段依据clash的配置设计
 type ShadowsocksR struct {
 	Base
 	Password      string `yaml:"password" json:"password"`
 	Cipher        string `yaml:"cipher" json:"cipher"`
 	Protocol      string `yaml:"protocol" json:"protocol"`
-	ProtocolParam string `yaml:"protocol-param,omitempty" json:"protocol_param,omitempty"`
+	ProtocolParam string `yaml:"protocol-param,omitempty" json:"protocol-param,omitempty"`
 	Obfs          string `yaml:"obfs" json:"obfs"`
-	ObfsParam     string `yaml:"obfs-param,omitempty" json:"obfs_param,omitempty"`
-	Group         string `yaml:"group,omitempty" json:"group,omitempty"`
+	ObfsParam     string `yaml:"obfs-param,omitempty" json:"obfs-param,omitempty"`
 }
 
 func (ssr ShadowsocksR) Identifier() string {
@@ -69,8 +68,8 @@ func (ssr ShadowsocksR) Link() (link string) {
 	query := url.Values{}
 	query.Add("obfsparam", tool.Base64EncodeString(ssr.ObfsParam, true))
 	query.Add("protoparam", tool.Base64EncodeString(ssr.ProtocolParam, true))
-	query.Add("remarks", tool.Base64EncodeString(ssr.Name, true))
-	query.Add("group", tool.Base64EncodeString("proxy.tgbot.co", true))
+	//query.Add("remarks", tool.Base64EncodeString(ssr.Name, true))
+	query.Add("group", tool.Base64EncodeString("proxypoolss.herokuapp.com", true))
 	payload = tool.Base64EncodeString(fmt.Sprintf("%s/?%s", payload, query.Encode()), true)
 	return fmt.Sprintf("ssr://%s", payload)
 }
@@ -112,18 +111,18 @@ func ParseSSRLink(link string) (*ShadowsocksR, error) {
 	moreInfo, _ := url.ParseQuery(infoPayload[1])
 
 	// remarks
-	remarks := moreInfo.Get("remarks")
-	remarks, err = tool.Base64DecodeString(remarks)
-	if err != nil {
-		remarks = ""
-		err = nil
-	}
-	if strings.ContainsAny(remarks, "\t\r\n ") {
-		remarks = strings.ReplaceAll(remarks, "\t", "")
-		remarks = strings.ReplaceAll(remarks, "\r", "")
-		remarks = strings.ReplaceAll(remarks, "\n", "")
-		remarks = strings.ReplaceAll(remarks, " ", "")
-	}
+	//remarks := moreInfo.Get("remarks")
+	//remarks, err = tool.Base64DecodeString(remarks)
+	//if err != nil {
+	//	remarks = ""
+	//	err = nil
+	//}
+	//if strings.ContainsAny(remarks, "\t\r\n ") {
+	//	remarks = strings.ReplaceAll(remarks, "\t", "")
+	//	remarks = strings.ReplaceAll(remarks, "\r", "")
+	//	remarks = strings.ReplaceAll(remarks, "\n", "")
+	//	remarks = strings.ReplaceAll(remarks, " ", "")
+	//}
 
 	// protocol param
 	protocolParam, err := tool.Base64DecodeString(moreInfo.Get("protoparam"))
@@ -149,15 +148,9 @@ func ParseSSRLink(link string) (*ShadowsocksR, error) {
 		obfs = strings.ReplaceAll(obfs, "_compatible", "")
 	}
 
-	//group, err := tool.Base64DecodeString(moreInfo.Get("group"))
-	//if err != nil {
-	//	group = ""
-	//}
-	group := ""
-
 	return &ShadowsocksR{
 		Base: Base{
-			Name:   remarks + "_" + strconv.Itoa(rand.Int()),
+			Name:   "",
 			Server: server,
 			Port:   port,
 			Type:   "ssr",
@@ -168,7 +161,6 @@ func ParseSSRLink(link string) (*ShadowsocksR, error) {
 		ProtocolParam: protocolParam,
 		Obfs:          obfs,
 		ObfsParam:     obfsParam,
-		Group:         group,
 	}, nil
 }
 

@@ -1,23 +1,36 @@
 package config
 
 import (
+	"encoding/json"
 	"errors"
+	"github.com/Sansui233/proxypool/log"
 	"io/ioutil"
 	"os"
 	"strings"
 
+	"github.com/Sansui233/proxypool/pkg/tool"
 	"github.com/ghodss/yaml"
-	"github.com/zu1k/proxypool/pkg/tool"
 )
 
 var configFilePath = "config.yaml"
 
 type ConfigOptions struct {
-	Domain      string   `json:"domain" yaml:"domain"`
-	DatabaseUrl string   `json:"database_url" yaml:"database_url"`
-	CFEmail     string   `json:"cf_email" yaml:"cf_email"`
-	CFKey       string   `json:"cf_key" yaml:"cf_key"`
-	SourceFiles []string `json:"source-files" yaml:"source-files"`
+	Domain                string   `json:"domain" yaml:"domain"`
+	Port                  string   `json:"port" yaml:"port"`
+	DatabaseUrl           string   `json:"database_url" yaml:"database_url"`
+	CrawlInterval         uint64   `json:"crawl-interval" yaml:"crawl-interval"`
+	CFEmail               string   `json:"cf_email" yaml:"cf_email"`
+	CFKey                 string   `json:"cf_key" yaml:"cf_key"`
+	SourceFiles           []string `json:"source-files" yaml:"source-files"`
+	HealthCheckTimeout    int      `json:"healthcheck-timeout" yaml:"healthcheck-timeout"`
+	HealthCheckConnection int      `json:"healthcheck-connection" yaml:"healthcheck-connection"`
+	SpeedTest             bool     `json:"speedtest" yaml:"speedtest"`
+	SpeedTestInterval     uint64   `json:"speedtest-interval" yaml:"speedtest-interval"`
+	SpeedTimeout          int      `json:"speed-timeout" yaml:"speed-timeout"`
+	SpeedConnection       int      `json:"speed-connection" yaml:"speed-connection"`
+	ActiveFrequency       uint16   `json:"active-frequency" yaml:"active-frequency" `
+	ActiveInterval        uint64   `json:"active-interval" yaml:"active-interval"`
+	ActiveMaxNumber       uint16   `json:"active-max-number" yaml:"active-max-number"`
 }
 
 // Config 配置
@@ -40,6 +53,33 @@ func Parse(path string) error {
 		return err
 	}
 
+	// set default
+	if Config.SpeedConnection <= 0 {
+		Config.SpeedConnection = 5
+	}
+	// set default
+	if Config.HealthCheckConnection <= 0 {
+		Config.HealthCheckConnection = 500
+	}
+	if Config.Port == "" {
+		Config.Port = "12580"
+	}
+	if Config.CrawlInterval == 0 {
+		Config.CrawlInterval = 60
+	}
+	if Config.SpeedTestInterval == 0 {
+		Config.SpeedTestInterval = 720
+	}
+	if Config.ActiveInterval == 0 {
+		Config.ActiveInterval = 60
+	}
+	if Config.ActiveFrequency == 0 {
+		Config.ActiveFrequency = 100
+	}
+	if Config.ActiveMaxNumber == 0 {
+		Config.ActiveMaxNumber = 100
+	}
+
 	// 部分配置环境变量优先
 	if domain := os.Getenv("DOMAIN"); domain != "" {
 		Config.Domain = domain
@@ -50,6 +90,8 @@ func Parse(path string) error {
 	if cfKey := os.Getenv("CF_API_KEY"); cfKey != "" {
 		Config.CFKey = cfKey
 	}
+	s, _ := json.Marshal(Config)
+	log.Debugln("Config options: %s", string(s))
 
 	return nil
 }

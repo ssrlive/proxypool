@@ -5,9 +5,15 @@
 *.so
 *.dylib
 bin/*
+tmp/
+go.sum
+.vscode/
+proxypool
 
 # Test binary, build with `go test -c`
 *.test
+# Manually add it if neccessary
+*_test.*
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
@@ -21,4 +27,8 @@ vendor
 # macOS file
 .DS_Store
 
-assets/html/
+# assets
+assets/html/*
+assets/css/*
+assets/static/*
+

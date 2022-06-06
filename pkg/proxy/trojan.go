@@ -3,7 +3,6 @@ package proxy
 import (
 	"encoding/json"
 	"errors"
-	"math/rand"
 	"net"
 	"net/url"
 	"regexp"
@@ -15,6 +14,10 @@ var (
 	ErrorNotTrojanink = errors.New("not a correct trojan link")
 )
 
+// TODO unknown field
+// Link: host, path
+// Trojan: Network GrpcOpts
+
 type Trojan struct {
 	Base
 	Password       string   `yaml:"password" json:"password"`
@@ -22,6 +25,8 @@ type Trojan struct {
 	SNI            string   `yaml:"sni,omitempty" json:"sni,omitempty"`
 	SkipCertVerify bool     `yaml:"skip-cert-verify,omitempty" json:"skip-cert-verify,omitempty"`
 	UDP            bool     `yaml:"udp,omitempty" json:"udp,omitempty"`
+	// Network        string      `yaml:"network,omitempty" json:"network,omitempty"`
+	// GrpcOpts       GrpcOptions `yaml:"grpc-opts,omitempty" json:"grpc-opts,omitempty"`
 }
 
 /**
@@ -122,10 +127,10 @@ func ParseTrojanLink(link string) (*Trojan, error) {
 	sni, _ = url.QueryUnescape(sni)
 	transformType := moreInfos.Get("type")
 	transformType, _ = url.QueryUnescape(transformType)
-	host := moreInfos.Get("host")
-	host, _ = url.QueryUnescape(host)
-	path := moreInfos.Get("path")
-	path, _ = url.QueryUnescape(path)
+	// host := moreInfos.Get("host")
+	// host, _ = url.QueryUnescape(host)
+	// path := moreInfos.Get("path")
+	// path, _ = url.QueryUnescape(path)
 
 	alpn := make([]string, 0)
 	if transformType == "h2" {
@@ -138,15 +143,15 @@ func ParseTrojanLink(link string) (*Trojan, error) {
 
 	return &Trojan{
 		Base: Base{
-			Name:   strconv.Itoa(rand.Int()),
+			Name:   "",
 			Server: server,
 			Port:   port,
 			Type:   "trojan",
 		},
 		Password:       password,
 		ALPN:           alpn,
+		SNI:            sni,
 		UDP:            true,
-		SNI:            host,
 		SkipCertVerify: true,
 	}, nil
 }

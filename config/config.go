@@ -5,6 +5,9 @@ import (
 	"errors"
 	"io/ioutil"
 	"os"
+	"path/filepath"
+	"runtime"
+	"runtime/debug"
 	"strings"
 
 	"github.com/ssrlive/proxypool/log"
@@ -37,14 +40,41 @@ type ConfigOptions struct {
 // Config 配置
 var Config ConfigOptions
 
-// Parse 解析配置文件，支持本地文件系统和网络链接
-func Parse(path string) error {
-	if path == "" {
-		path = configFilePath
-	} else {
-		configFilePath = path
+func (config ConfigOptions) HostUrl() string {
+	url := config.Domain
+	if len(strings.Split(url, ":")) <= 1 {
+		url = url + ":" + config.Port
 	}
-	fileData, err := ReadFile(path)
+	return url
+}
+
+func SetFilePath(path string) {
+	configFilePath = extractFullPath(path)
+}
+
+func FilePath() string {
+	return configFilePath
+}
+
+func configFileFullPath(path string) string {
+	if filepath.IsAbs(path) {
+		return path
+	}
+	exPath, _ := os.Getwd()
+
+	return filepath.Join(exPath, path)
+}
+
+func extractFullPath(path string) string {
+	if IsLocalFile(path) {
+		path = configFileFullPath(path)
+	}
+	return path
+}
+
+// Parse 解析配置文件，支持本地文件系统和网络链接
+func Parse() error {
+	fileData, err := ReadFile(configFilePath)
 	if err != nil {
 		return err
 	}
@@ -58,6 +88,10 @@ func Parse(path string) error {
 	if Config.SpeedConnection <= 0 {
 		Config.SpeedConnection = 5
 	}
+	if Config.SpeedTimeout <= 0 {
+		Config.SpeedTimeout = 10
+	}
+
 	// set default
 	if Config.HealthCheckConnection <= 0 {
 		Config.HealthCheckConnection = 500
@@ -97,9 +131,16 @@ func Parse(path string) error {
 	return nil
 }
 
+func IsLocalFile(path string) bool {
+	if strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://") {
+		return false
+	}
+	return true
+}
+
 // 从本地文件或者http链接读取配置文件内容
 func ReadFile(path string) ([]byte, error) {
-	if strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://") {
+	if !IsLocalFile(path) {
 		resp, err := tool.GetHttpClient().Get(path)
 		if err != nil {
 			return nil, errors.New("config file http get fail")
@@ -111,5 +152,48 @@ func ReadFile(path string) ([]byte, error) {
 			return nil, err
 		}
 		return ioutil.ReadFile(path)
+	}
+}
+
+func fullDirOfExecutable() string {
+	exePath, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	res, _ := filepath.EvalSymlinks(filepath.Dir(exePath))
+	return res
+}
+
+func moduleName() string {
+	info, _ := debug.ReadBuildInfo()
+	_, name := filepath.Split(info.Main.Path)
+	return name
+}
+
+// 返回資源文件所在的根目錄.
+func ResourceRoot() string {
+	exe, _ := os.Executable()
+	_, file := filepath.Split(exe)
+
+	currDir, _ := os.Getwd()
+	exeDir := fullDirOfExecutable()
+	if exeDir != currDir {
+		// 從 go run 運行, 或者從 別的目錄 運行.
+		module := moduleName()
+		os := runtime.GOOS
+		if os == "windows" {
+			module = module + ".exe"
+		}
+		if file == module {
+			// 可執行文件在別的目錄運行.
+			return exeDir
+		} else {
+			// 從 go run 運行, 可執行文件生成在臨時目錄,
+			// 於是返回當前目錄作爲資源根目錄.
+			return currDir
+		}
+	} else {
+		// 從 exe 所在目錄運行.
+		return exeDir
 	}
 }

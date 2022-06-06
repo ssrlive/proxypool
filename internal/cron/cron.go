@@ -21,7 +21,7 @@ func Cron() {
 }
 
 func crawlTask() {
-	err := app.InitConfigAndGetters("")
+	err := app.InitConfigAndGetters()
 	if err != nil {
 		log.Errorln("[cron.go] config parse error: %s", err)
 	}
@@ -32,7 +32,7 @@ func crawlTask() {
 
 func speedTestTask() {
 	log.Infoln("Doing speed test task...")
-	err := config.Parse("")
+	err := config.Parse()
 	if err != nil {
 		log.Errorln("[cron.go] config parse error: %s", err)
 	}
@@ -54,7 +54,7 @@ func speedTestTask() {
 
 func frequentSpeedTestTask() {
 	log.Infoln("Doing speed test task for active proxies...")
-	err := config.Parse("")
+	err := config.Parse()
 	if err != nil {
 		log.Errorln("[cron.go] config parse error: %s", err)
 	}

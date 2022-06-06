@@ -115,7 +115,7 @@ func CrawlGo() {
 	database.SaveProxyList(proxies)
 	database.ClearOldItems()
 
-	log.Infoln("Usablility checking done. Open %s to check", C.Config.Domain+":"+C.Config.Port)
+	log.Infoln("Usablility checking done. Open %s to check", C.Config.HostUrl())
 
 	// 测速
 	speedTestNew(proxies)

@@ -2,6 +2,7 @@ package app
 
 import (
 	"errors"
+	"path/filepath"
 
 	"github.com/ssrlive/proxypool/log"
 
@@ -15,14 +16,20 @@ import (
 
 var Getters = make([]getter.Getter, 0)
 
-func InitConfigAndGetters(path string) (err error) {
-	err = config.Parse(path)
+func InitConfigAndGetters() (err error) {
+	err = config.Parse()
 	if err != nil {
 		return
 	}
 	if s := config.Config.SourceFiles; len(s) == 0 {
 		return errors.New("no sources")
 	} else {
+		for index, path := range s {
+			if config.IsLocalFile(path) && !filepath.IsAbs(path) {
+				var configDir = filepath.Dir(config.FilePath())
+				s[index] = filepath.Join(configDir, path)
+			}
+		}
 		initGetters(s)
 	}
 	return

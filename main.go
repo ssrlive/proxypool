@@ -5,6 +5,7 @@ import (
 	_ "net/http/pprof"
 	"os"
 
+	"github.com/ssrlive/proxypool/config"
 	"github.com/ssrlive/proxypool/pkg/geoIp"
 
 	"github.com/ssrlive/proxypool/api"
@@ -14,10 +15,11 @@ import (
 	"github.com/ssrlive/proxypool/log"
 )
 
-var configFilePath = ""
 var debugMode = false
 
 func main() {
+	var configFilePath = ""
+
 	//go func() {
 	//	http.ListenAndServe("0.0.0.0:6060", nil)
 	//}()
@@ -37,11 +39,17 @@ func main() {
 	if configFilePath == "" {
 		configFilePath = "config.yaml"
 	}
-	err := app.InitConfigAndGetters(configFilePath)
+
+	config.SetFilePath(configFilePath)
+
+	err := app.InitConfigAndGetters()
 	if err != nil {
 		log.Errorln("Configuration init error: %s", err.Error())
 		panic(err)
 	}
+
+	exe, _ := os.Executable()
+	log.Infoln("Running image path: %s", exe)
 
 	database.InitTables()
 	// init GeoIp db reader and map between emoji's and countries

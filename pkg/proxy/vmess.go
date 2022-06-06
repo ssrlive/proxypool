@@ -345,6 +345,9 @@ var (
 
 func GrepVmessLinkFromString(text string) []string {
 	results := make([]string, 0)
+	if !strings.Contains(text, "vmess://") {
+		return results
+	}
 	texts := strings.Split(text, "vmess://")
 	for _, text := range texts {
 		results = append(results, vmessPlainRe.FindAllString("vmess://"+text, -1)...)

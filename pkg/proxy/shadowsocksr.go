@@ -46,11 +46,12 @@ func (ssr ShadowsocksR) String() string {
 }
 
 func (ssr ShadowsocksR) ToClash() string {
-	data, err := json.Marshal(ssr)
-	if err != nil {
+	theString := ssr.String()
+	if len(theString) > 0 {
+		return "- " + theString
+	} else {
 		return ""
 	}
-	return "- " + string(data)
 }
 
 func (ssr ShadowsocksR) ToSurge() string {
@@ -89,8 +90,8 @@ func ParseSSRLink(link string) (*ShadowsocksR, error) {
 		return nil, ErrorMissingQuery
 	}
 
-	infoPayload := strings.SplitN(payload, "/?", 2)
-	if len(infoPayload) < 2 {
+	infoPayload := strings.SplitN(payload, "/?", -1)
+	if len(infoPayload) > 2 {
 		return nil, ErrorNotSSRLink
 	}
 	ssrpath := strings.Split(infoPayload[0], ":")
@@ -108,11 +109,27 @@ func ParseSSRLink(link string) (*ShadowsocksR, error) {
 		return nil, ErrorPasswordParseFail
 	}
 
+	if len(infoPayload) == 1 {
+		return &ShadowsocksR{
+			Base: Base{
+				Name:   "",
+				Server: server,
+				Port:   port,
+				Type:   "ssr",
+			},
+			Password:      password,
+			Cipher:        cipher,
+			Protocol:      protocol,
+			ProtocolParam: "",
+			Obfs:          obfs,
+			ObfsParam:     "",
+		}, nil
+	}
+
 	moreInfo, _ := url.ParseQuery(infoPayload[1])
 
 	// remarks
-	//remarks := moreInfo.Get("remarks")
-	//remarks, err = tool.Base64DecodeString(remarks)
+	//remarks, err := tool.Base64DecodeString(moreInfo.Get("remarks"))
 	//if err != nil {
 	//	remarks = ""
 	//	err = nil
@@ -121,8 +138,15 @@ func ParseSSRLink(link string) (*ShadowsocksR, error) {
 	//	remarks = strings.ReplaceAll(remarks, "\t", "")
 	//	remarks = strings.ReplaceAll(remarks, "\r", "")
 	//	remarks = strings.ReplaceAll(remarks, "\n", "")
-	//	remarks = strings.ReplaceAll(remarks, " ", "")
 	//}
+	//if strings.ContainsAny(remarks, ":/.- ") {
+	//	remarks = strings.ReplaceAll(remarks, ":", "_")
+	//	remarks = strings.ReplaceAll(remarks, "/", "_")
+	//	remarks = strings.ReplaceAll(remarks, ".", "_")
+	//	remarks = strings.ReplaceAll(remarks, "-", "_")
+	//	remarks = strings.ReplaceAll(remarks, " ", "_")
+	//}
+	//remarks = tool.ReplaceChineseCharWith(remarks, "_")
 
 	// protocol param
 	protocolParam, err := tool.Base64DecodeString(moreInfo.Get("protoparam"))
@@ -170,6 +194,9 @@ var (
 
 func GrepSSRLinkFromString(text string) []string {
 	results := make([]string, 0)
+	if !strings.Contains(text, "ssr://") {
+		return results
+	}
 	texts := strings.Split(text, "ssr://")
 	for _, text := range texts {
 		results = append(results, ssrPlainRe.FindAllString("ssr://"+text, -1)...)

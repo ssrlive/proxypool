@@ -58,6 +58,7 @@ func Convert2SS(p Proxy) (ss *Shadowsocks, err error) {
 }
 
 var SSRCipherList = []string{
+	"none",
 	"aes-128-cfb",
 	"aes-192-cfb",
 	"aes-256-cfb",

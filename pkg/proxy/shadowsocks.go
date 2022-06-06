@@ -88,6 +88,8 @@ func ParseSSLink(link string) (*Shadowsocks, error) {
 		return nil, ErrorNotSSLink
 	}
 
+	remarks := uri.Fragment
+
 	cipher := ""
 	password := ""
 	if uri.User.String() == "" {
@@ -142,7 +144,7 @@ func ParseSSLink(link string) (*Shadowsocks, error) {
 
 	return &Shadowsocks{
 		Base: Base{
-			Name:   "",
+			Name:   remarks,
 			Server: server,
 			Port:   port,
 			Type:   "ss",
@@ -161,6 +163,9 @@ var (
 // GrepSSLinkFromString() remove web fuzz characters before a ss link
 func GrepSSLinkFromString(text string) []string {
 	results := make([]string, 0)
+	if !strings.Contains(text, "ss://") {
+		return results
+	}
 	texts := strings.Split(text, "ss://")
 	for _, text := range texts {
 		results = append(results, ssPlainRe.FindAllString("ss://"+text, -1)...)

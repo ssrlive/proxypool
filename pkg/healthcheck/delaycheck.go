@@ -12,7 +12,7 @@ import (
 
 	"github.com/ivpusic/grpool"
 
-	"github.com/Dreamacro/clash/adapters/outbound"
+	"github.com/Dreamacro/clash/adapter"
 )
 
 func CleanBadProxiesWithGrpool(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
@@ -80,7 +80,7 @@ func testDelay(p proxy.Proxy) (delay uint16, err error) {
 		pmap["alterId"] = int(pmap["alterId"].(float64))
 	}
 
-	clashProxy, err := outbound.ParseProxy(pmap)
+	clashProxy, err := adapter.ParseProxy(pmap)
 	if err != nil {
 		fmt.Println(err.Error())
 		return 0, err

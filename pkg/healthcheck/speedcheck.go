@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Dreamacro/clash/adapters/outbound"
+	"github.com/Dreamacro/clash/adapter"
 	C "github.com/Dreamacro/clash/constant"
 	"github.com/ivpusic/grpool"
 	"github.com/ssrlive/proxypool/log"
@@ -148,7 +148,7 @@ func ProxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 		}
 	}
 
-	clashProxy, err := outbound.ParseProxy(pmap)
+	clashProxy, err := adapter.ParseProxy(pmap)
 	if err != nil {
 		return -1, err
 	}

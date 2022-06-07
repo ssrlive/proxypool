@@ -1,6 +1,7 @@
 package getter
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"regexp"
 	"strings"
@@ -51,9 +52,7 @@ func (c *Clash) Get() proxy.ProxyList {
 // clash 文檔有效性檢查
 //
 func buildClashDoc(fullcheck bool, body []byte) []byte {
-	// 這個正則表達式的設計很粗糙，對嵌套大括號 {{}} 檢測失靈，
-	// 但這裏不用精確判斷，糊弄過去。
-	regexp, _ := regexp.Compile(`{\s*name:[^,]+,\s*server:\s*\S+,\s*port:\s*\d+\s*,\s*type:[^}]+}`)
+	regexp, _ := regexp.Compile(`-\s*{`)
 
 	tmp := strings.Split(strings.ReplaceAll(string(body), "\r\n", "\n"), "\n")
 	var arr []string
@@ -64,9 +63,16 @@ func buildClashDoc(fullcheck bool, body []byte) []byte {
 			return body
 		}
 		match := regexp.FindStringIndex(s0)
-		if match != nil {
-			arr = append(arr, s0)
+		if match == nil {
+			continue
 		}
+		nodeStr := s0[match[1]-1:]
+		pmap := make(map[string]interface{})
+		if json.Unmarshal([]byte(nodeStr), &pmap) != nil {
+			continue
+		}
+
+		arr = append(arr, "  - "+nodeStr)
 	}
 
 	if len(arr) == 0 {

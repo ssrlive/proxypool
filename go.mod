@@ -2,7 +2,7 @@
 
 module github.com/ssrlive/proxypool
 
-go 1.16
+go 1.18
 
 require (
 	github.com/Dreamacro/clash v1.10.6

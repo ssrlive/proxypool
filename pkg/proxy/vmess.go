@@ -22,16 +22,18 @@ var (
 
 type Vmess struct {
 	Base
-	UUID           string       `yaml:"uuid" json:"uuid"`
-	AlterID        int          `yaml:"alterId" json:"alterId"`
-	Cipher         string       `yaml:"cipher" json:"cipher"`
-	Network        string       `yaml:"network,omitempty" json:"network,omitempty"`
-	ServerName     string       `yaml:"servername,omitempty" json:"servername,omitempty"`
-	HTTPOpts       HTTPOptions  `yaml:"http-opts,omitempty" json:"http-opts,omitempty"`
-	HTTP2Opts      HTTP2Options `yaml:"h2-opts,omitempty" json:"h2-opts,omitempty"`
-	TLS            bool         `yaml:"tls,omitempty" json:"tls,omitempty"`
-	SkipCertVerify bool         `yaml:"skip-cert-verify,omitempty" json:"skip-cert-verify,omitempty"`
-	WSOpts         WSOptions    `yaml:"ws-opts,omitempty" json:"ws-opts,omitempty"`
+	UUID           string            `yaml:"uuid" json:"uuid"`
+	AlterID        int               `yaml:"alterId" json:"alterId"`
+	Cipher         string            `yaml:"cipher" json:"cipher"`
+	Network        string            `yaml:"network,omitempty" json:"network,omitempty"`
+	ServerName     string            `yaml:"servername,omitempty" json:"servername,omitempty"`
+	HTTPOpts       HTTPOptions       `yaml:"http-opts,omitempty" json:"http-opts,omitempty"`
+	HTTP2Opts      HTTP2Options      `yaml:"h2-opts,omitempty" json:"h2-opts,omitempty"`
+	TLS            bool              `yaml:"tls,omitempty" json:"tls,omitempty"`
+	SkipCertVerify bool              `yaml:"skip-cert-verify,omitempty" json:"skip-cert-verify,omitempty"`
+	WSOpts         WSOptions         `yaml:"ws-opts,omitempty" json:"ws-opts,omitempty"`
+	WSPath         string            `yaml:"ws-path,omitempty" json:"ws-path,omitempty"`
+	WSHeaders      map[string]string `yaml:"ws-headers,omitempty" json:"ws-headers,omitempty"`
 }
 
 type WSOptions struct {
@@ -53,6 +55,17 @@ type HTTP2Options struct {
 // type GrpcOptions struct {
 // 	GrpcServiceName string `proxy:"grpc-service-name,omitempty"`
 // }
+
+func (v Vmess) CompatibilityFixes() {
+	if v.Network == "ws" {
+		if v.WSOpts.Path == "" {
+			v.WSOpts.Path = v.WSPath
+		}
+		if len(v.WSOpts.Headers) == 0 {
+			v.WSOpts.Headers = v.WSHeaders
+		}
+	}
+}
 
 func (v Vmess) Identifier() string {
 	return net.JoinHostPort(v.Server, strconv.Itoa(v.Port)) + v.Cipher + v.UUID

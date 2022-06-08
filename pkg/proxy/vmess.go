@@ -31,7 +31,7 @@ type Vmess struct {
 	HTTP2Opts      HTTP2Options      `yaml:"h2-opts,omitempty" json:"h2-opts,omitempty"`
 	TLS            bool              `yaml:"tls,omitempty" json:"tls,omitempty"`
 	SkipCertVerify bool              `yaml:"skip-cert-verify,omitempty" json:"skip-cert-verify,omitempty"`
-	WSOpts         WSOptions         `yaml:"ws-opts,omitempty" json:"ws-opts,omitempty"`
+	WSOpts         *WSOptions        `yaml:"ws-opts,omitempty" json:"ws-opts,omitempty"`
 	WSPath         string            `yaml:"ws-path,omitempty" json:"ws-path,omitempty"`
 	WSHeaders      map[string]string `yaml:"ws-headers,omitempty" json:"ws-headers,omitempty"`
 }
@@ -64,6 +64,8 @@ func (v *Vmess) CompatibilityFixes() {
 		if len(v.WSOpts.Headers) == 0 {
 			v.WSOpts.Headers = v.WSHeaders
 		}
+	} else {
+		v.WSOpts = nil
 	}
 	v.WSPath = ""
 	v.WSHeaders = nil
@@ -260,7 +262,7 @@ func ParseVmessLink(link string) (*Vmess, error) {
 			aid, _ = strconv.Atoi(aidStr)
 		}
 
-		return &Vmess{
+		v := Vmess{
 			Base: Base{
 				Name:   remarks + "_" + strconv.Itoa(rand.Int()),
 				Server: server,
@@ -277,11 +279,13 @@ func ParseVmessLink(link string) (*Vmess, error) {
 			HTTP2Opts:      h2Opt,
 			SkipCertVerify: true,
 			ServerName:     server,
-			WSOpts: WSOptions{
+			WSOpts: &WSOptions{
 				Path:    path,
 				Headers: wsHeaders,
 			},
-		}, nil
+		}
+		v.CompatibilityFixes()
+		return &v, nil
 	} else {
 		// V2rayN ref: https://github.com/2dust/v2rayN/wiki/%E5%88%86%E4%BA%AB%E9%93%BE%E6%8E%A5%E6%A0%BC%E5%BC%8F%E8%AF%B4%E6%98%8E(ver-2)
 		payload, err := tool.Base64DecodeString(linkPayload)
@@ -337,7 +341,7 @@ func ParseVmessLink(link string) (*Vmess, error) {
 			vmessJson.Path = ""
 		}
 
-		return &Vmess{
+		v := Vmess{
 			Base: Base{
 				Name:   "",
 				Server: vmessJson.Add,
@@ -354,11 +358,13 @@ func ParseVmessLink(link string) (*Vmess, error) {
 			ServerName:     vmessJson.Host,
 			TLS:            tls,
 			SkipCertVerify: true,
-			WSOpts: WSOptions{
+			WSOpts: &WSOptions{
 				Path:    vmessJson.Path,
 				Headers: wsHeaders,
 			},
-		}, nil
+		}
+		v.CompatibilityFixes()
+		return &v, nil
 	}
 }
 

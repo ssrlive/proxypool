@@ -60,13 +60,13 @@ func (v *Vmess) CompatibilityFixes() {
 	if v.Network == "ws" {
 		if v.WSOpts.Path == "" {
 			v.WSOpts.Path = v.WSPath
-			v.WSPath = ""
 		}
 		if len(v.WSOpts.Headers) == 0 {
 			v.WSOpts.Headers = v.WSHeaders
-			v.WSHeaders = nil
 		}
 	}
+	v.WSPath = ""
+	v.WSHeaders = nil
 }
 
 func (v Vmess) Identifier() string {

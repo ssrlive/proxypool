@@ -56,13 +56,15 @@ type HTTP2Options struct {
 // 	GrpcServiceName string `proxy:"grpc-service-name,omitempty"`
 // }
 
-func (v Vmess) CompatibilityFixes() {
+func (v *Vmess) CompatibilityFixes() {
 	if v.Network == "ws" {
 		if v.WSOpts.Path == "" {
 			v.WSOpts.Path = v.WSPath
+			v.WSPath = ""
 		}
 		if len(v.WSOpts.Headers) == 0 {
 			v.WSOpts.Headers = v.WSHeaders
+			v.WSHeaders = nil
 		}
 	}
 }

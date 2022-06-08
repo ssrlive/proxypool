@@ -53,18 +53,18 @@ type HTTP2Options struct {
 func (v *Vmess) UnmarshalJSON(data []byte) error {
 	tmp := struct {
 		Base
-		UUID           string                 `yaml:"uuid" json:"uuid"`
-		AlterID        int                    `yaml:"alterId" json:"alterId"`
-		Cipher         string                 `yaml:"cipher" json:"cipher"`
-		Network        string                 `yaml:"network,omitempty" json:"network,omitempty"`
-		ServerName     string                 `yaml:"servername,omitempty" json:"servername,omitempty"`
-		HTTPOpts       HTTPOptions            `yaml:"http-opts,omitempty" json:"http-opts,omitempty"`
-		HTTP2Opts      HTTP2Options           `yaml:"h2-opts,omitempty" json:"h2-opts,omitempty"`
-		TLS            bool                   `yaml:"tls,omitempty" json:"tls,omitempty"`
-		SkipCertVerify bool                   `yaml:"skip-cert-verify,omitempty" json:"skip-cert-verify,omitempty"`
-		WsOpts         map[string]interface{} `yaml:"ws-opts,omitempty" json:"ws-opts,omitempty"`
-		WSPath         string                 `yaml:"ws-path,omitempty" json:"ws-path,omitempty"`
-		WSHeaders      map[string]string      `yaml:"ws-headers,omitempty" json:"ws-headers,omitempty"`
+		UUID           string            `yaml:"uuid" json:"uuid"`
+		AlterID        int               `yaml:"alterId" json:"alterId"`
+		Cipher         string            `yaml:"cipher" json:"cipher"`
+		Network        string            `yaml:"network,omitempty" json:"network,omitempty"`
+		ServerName     string            `yaml:"servername,omitempty" json:"servername,omitempty"`
+		HTTPOpts       HTTPOptions       `yaml:"http-opts,omitempty" json:"http-opts,omitempty"`
+		HTTP2Opts      HTTP2Options      `yaml:"h2-opts,omitempty" json:"h2-opts,omitempty"`
+		TLS            bool              `yaml:"tls,omitempty" json:"tls,omitempty"`
+		SkipCertVerify bool              `yaml:"skip-cert-verify,omitempty" json:"skip-cert-verify,omitempty"`
+		WSOpts         WSOptions         `yaml:"ws-opts,omitempty" json:"ws-opts,omitempty"`
+		WSPath         string            `yaml:"ws-path,omitempty" json:"ws-path,omitempty"`
+		WSHeaders      map[string]string `yaml:"ws-headers,omitempty" json:"ws-headers,omitempty"`
 	}{}
 
 	err := json.Unmarshal(data, &tmp)
@@ -83,19 +83,11 @@ func (v *Vmess) UnmarshalJSON(data []byte) error {
 	v.TLS = tmp.TLS
 	v.SkipCertVerify = tmp.SkipCertVerify
 	if tmp.Network == "ws" {
-		wsOpts := WSOptions{}
-		if tmp.WsOpts != nil {
-			if path, ok := tmp.WsOpts["path"].(string); ok {
-				wsOpts.Path = path
-			}
-			if hdr, ok := tmp.WsOpts["headers"].(map[string]string); ok {
-				wsOpts.Headers = hdr
-			}
-		} else {
-			wsOpts.Path = tmp.WSPath
-			wsOpts.Headers = tmp.WSHeaders
+		if tmp.WSOpts.Path == "" {
+			tmp.WSOpts.Path = tmp.WSPath
+			tmp.WSOpts.Headers = tmp.WSHeaders
 		}
-		v.WSOpts = &wsOpts
+		v.WSOpts = &tmp.WSOpts
 	}
 
 	return nil

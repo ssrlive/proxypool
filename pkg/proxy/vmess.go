@@ -69,6 +69,69 @@ func (v *Vmess) CompatibilityFixes() {
 	v.WSHeaders = nil
 }
 
+//
+// Override JSON Marshalling in GO
+// This code looks stupid, but it does what I want:
+// Remove field "ws-opts" while "network" is not "ws"
+//
+// FIXME: Who can tell me the right way?
+//
+func (v Vmess) MarshalJSON() ([]byte, error) {
+	if v.Network == "ws" {
+		x := struct {
+			Base
+			UUID           string       `yaml:"uuid" json:"uuid"`
+			AlterID        int          `yaml:"alterId" json:"alterId"`
+			Cipher         string       `yaml:"cipher" json:"cipher"`
+			Network        string       `yaml:"network,omitempty" json:"network,omitempty"`
+			ServerName     string       `yaml:"servername,omitempty" json:"servername,omitempty"`
+			HTTPOpts       HTTPOptions  `yaml:"http-opts,omitempty" json:"http-opts,omitempty"`
+			HTTP2Opts      HTTP2Options `yaml:"h2-opts,omitempty" json:"h2-opts,omitempty"`
+			TLS            bool         `yaml:"tls,omitempty" json:"tls,omitempty"`
+			SkipCertVerify bool         `yaml:"skip-cert-verify,omitempty" json:"skip-cert-verify,omitempty"`
+			WSOpts         WSOptions    `yaml:"ws-opts,omitempty" json:"ws-opts,omitempty"`
+		}{
+			Base:           v.Base,
+			UUID:           v.UUID,
+			AlterID:        v.AlterID,
+			Cipher:         v.Cipher,
+			Network:        v.Network,
+			ServerName:     v.ServerName,
+			HTTPOpts:       v.HTTPOpts,
+			HTTP2Opts:      v.HTTP2Opts,
+			TLS:            v.TLS,
+			SkipCertVerify: v.SkipCertVerify,
+			WSOpts:         v.WSOpts,
+		}
+		return json.Marshal(x)
+	} else {
+		x := struct {
+			Base
+			UUID           string       `yaml:"uuid" json:"uuid"`
+			AlterID        int          `yaml:"alterId" json:"alterId"`
+			Cipher         string       `yaml:"cipher" json:"cipher"`
+			Network        string       `yaml:"network,omitempty" json:"network,omitempty"`
+			ServerName     string       `yaml:"servername,omitempty" json:"servername,omitempty"`
+			HTTPOpts       HTTPOptions  `yaml:"http-opts,omitempty" json:"http-opts,omitempty"`
+			HTTP2Opts      HTTP2Options `yaml:"h2-opts,omitempty" json:"h2-opts,omitempty"`
+			TLS            bool         `yaml:"tls,omitempty" json:"tls,omitempty"`
+			SkipCertVerify bool         `yaml:"skip-cert-verify,omitempty" json:"skip-cert-verify,omitempty"`
+		}{
+			Base:           v.Base,
+			UUID:           v.UUID,
+			AlterID:        v.AlterID,
+			Cipher:         v.Cipher,
+			Network:        v.Network,
+			ServerName:     v.ServerName,
+			HTTPOpts:       v.HTTPOpts,
+			HTTP2Opts:      v.HTTP2Opts,
+			TLS:            v.TLS,
+			SkipCertVerify: v.SkipCertVerify,
+		}
+		return json.Marshal(x)
+	}
+}
+
 func (v Vmess) Identifier() string {
 	return net.JoinHostPort(v.Server, strconv.Itoa(v.Port)) + v.Cipher + v.UUID
 }

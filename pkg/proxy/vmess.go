@@ -32,15 +32,11 @@ type Vmess struct {
 	TLS            bool         `yaml:"tls,omitempty" json:"tls,omitempty"`
 	SkipCertVerify bool         `yaml:"skip-cert-verify,omitempty" json:"skip-cert-verify,omitempty"`
 	WSOpts         WSOptions    `yaml:"ws-opts,omitempty" json:"ws-opts,omitempty"`
-	//WSPath         string            `yaml:"ws-path,omitempty" json:"ws-path,omitempty"`
-	//WSHeaders      map[string]string `yaml:"ws-headers,omitempty" json:"ws-headers,omitempty"`
 }
 
 type WSOptions struct {
-	Path                string            `yaml:"path,omitempty" json:"path,omitempty"`
-	Headers             map[string]string `yaml:"headers,omitempty" json:"headers,omitempty"`
-	MaxEarlyData        int               `yaml:"max-early-data,omitempty" json:"max-early-data,omitempty"`
-	EarlyDataHeaderName string            `yaml:"early-data-header-name,omitempty" json:"early-data-header-name,omitempty"`
+	Path    string            `yaml:"path,omitempty" json:"path,omitempty"`
+	Headers map[string]string `yaml:"headers,omitempty" json:"headers,omitempty"`
 }
 
 type HTTPOptions struct {
@@ -270,8 +266,6 @@ func ParseVmessLink(link string) (*Vmess, error) {
 				Path:    path,
 				Headers: wsHeaders,
 			},
-			//WSPath:    path,
-			//WSHeaders: wsHeaders,
 		}, nil
 	} else {
 		// V2rayN ref: https://github.com/2dust/v2rayN/wiki/%E5%88%86%E4%BA%AB%E9%93%BE%E6%8E%A5%E6%A0%BC%E5%BC%8F%E8%AF%B4%E6%98%8E(ver-2)
@@ -349,8 +343,6 @@ func ParseVmessLink(link string) (*Vmess, error) {
 				Path:    vmessJson.Path,
 				Headers: wsHeaders,
 			},
-			//WSPath:         vmessJson.Path,
-			//WSHeaders:      wsHeaders,
 		}, nil
 	}
 }

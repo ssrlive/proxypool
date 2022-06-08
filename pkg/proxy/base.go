@@ -134,6 +134,7 @@ func ParseProxyFromClashProxy(p map[string]interface{}) (proxy Proxy, err error)
 		if err != nil {
 			return nil, err
 		}
+		proxy.CompatibilityFixes()
 		return &proxy, nil
 	case "trojan":
 		var proxy Trojan

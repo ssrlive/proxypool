@@ -26,13 +26,19 @@ type Vmess struct {
 	AlterID        int               `yaml:"alterId" json:"alterId"`
 	Cipher         string            `yaml:"cipher" json:"cipher"`
 	Network        string            `yaml:"network,omitempty" json:"network,omitempty"`
-	WSPath         string            `yaml:"ws-path,omitempty" json:"ws-path,omitempty"`
 	ServerName     string            `yaml:"servername,omitempty" json:"servername,omitempty"`
-	WSHeaders      map[string]string `yaml:"ws-headers,omitempty" json:"ws-headers,omitempty"`
 	HTTPOpts       HTTPOptions       `yaml:"http-opts,omitempty" json:"http-opts,omitempty"`
 	HTTP2Opts      HTTP2Options      `yaml:"h2-opts,omitempty" json:"h2-opts,omitempty"`
 	TLS            bool              `yaml:"tls,omitempty" json:"tls,omitempty"`
 	SkipCertVerify bool              `yaml:"skip-cert-verify,omitempty" json:"skip-cert-verify,omitempty"`
+	WSOpts         WSOptions         `yaml:"ws-opts,omitempty" json:"ws-opts,omitempty"`
+	WSPath         string            `yaml:"ws-path,omitempty" json:"ws-path,omitempty"`
+	WSHeaders      map[string]string `yaml:"ws-headers,omitempty" json:"ws-headers,omitempty"`
+}
+
+type WSOptions struct {
+	Path    string            `yaml:"path,omitempty" json:"path,omitempty"`
+	Headers map[string]string `yaml:"headers,omitempty" json:"headers,omitempty"`
 }
 
 type HTTPOptions struct {
@@ -49,6 +55,19 @@ type HTTP2Options struct {
 // type GrpcOptions struct {
 // 	GrpcServiceName string `proxy:"grpc-service-name,omitempty"`
 // }
+
+func (v *Vmess) CompatibilityFixes() {
+	if v.Network == "ws" {
+		if v.WSOpts.Path == "" {
+			v.WSOpts.Path = v.WSPath
+			v.WSPath = ""
+		}
+		if len(v.WSOpts.Headers) == 0 {
+			v.WSOpts.Headers = v.WSHeaders
+			v.WSHeaders = nil
+		}
+	}
+}
 
 func (v Vmess) Identifier() string {
 	return net.JoinHostPort(v.Server, strconv.Itoa(v.Port)) + v.Cipher + v.UUID
@@ -74,7 +93,7 @@ func (v Vmess) ToSurge() string {
 	// node2 = vmess, server, port, username=, ws=true, ws-path=, ws-headers=
 	if v.Network == "ws" {
 		wsHeasers := ""
-		for k, v := range v.WSHeaders {
+		for k, v := range v.WSOpts.Headers {
 			if wsHeasers == "" {
 				wsHeasers = k + ":" + v
 			} else {
@@ -82,7 +101,7 @@ func (v Vmess) ToSurge() string {
 			}
 		}
 		text := fmt.Sprintf("%s = vmess, %s, %d, username=%s, ws=true, tls=%t, ws-path=%s",
-			v.Name, v.Server, v.Port, v.UUID, v.TLS, v.WSPath)
+			v.Name, v.Server, v.Port, v.UUID, v.TLS, v.WSOpts.Path)
 		if wsHeasers != "" {
 			text += ", ws-headers=" + wsHeasers
 		}
@@ -127,14 +146,14 @@ func (v Vmess) toLinkJson() vmessLinkJson {
 		Id:   v.UUID,
 		Aid:  strconv.Itoa(v.AlterID),
 		Net:  v.Network,
-		Path: v.WSPath,
+		Path: v.WSOpts.Path,
 		Host: v.ServerName,
 		V:    "2",
 	}
 	if v.TLS {
 		vj.Tls = "tls"
 	}
-	if host, ok := v.WSHeaders["HOST"]; ok && host != "" {
+	if host, ok := v.WSOpts.Headers["HOST"]; ok && host != "" {
 		vj.Host = host
 	}
 	return vj
@@ -256,10 +275,12 @@ func ParseVmessLink(link string) (*Vmess, error) {
 			Network:        network,
 			HTTPOpts:       httpOpt,
 			HTTP2Opts:      h2Opt,
-			WSPath:         path,
-			WSHeaders:      wsHeaders,
 			SkipCertVerify: true,
 			ServerName:     server,
+			WSOpts: WSOptions{
+				Path:    path,
+				Headers: wsHeaders,
+			},
 		}, nil
 	} else {
 		// V2rayN ref: https://github.com/2dust/v2rayN/wiki/%E5%88%86%E4%BA%AB%E9%93%BE%E6%8E%A5%E6%A0%BC%E5%BC%8F%E8%AF%B4%E6%98%8E(ver-2)
@@ -330,11 +351,13 @@ func ParseVmessLink(link string) (*Vmess, error) {
 			Network:        vmessJson.Net,
 			HTTPOpts:       httpOpt,
 			HTTP2Opts:      h2Opt,
-			WSPath:         vmessJson.Path,
-			WSHeaders:      wsHeaders,
 			ServerName:     vmessJson.Host,
 			TLS:            tls,
 			SkipCertVerify: true,
+			WSOpts: WSOptions{
+				Path:    vmessJson.Path,
+				Headers: wsHeaders,
+			},
 		}, nil
 	}
 }
@@ -361,7 +384,7 @@ func str2jsonDynaUnmarshal(s string) (jsn map[string]interface{}, err error) {
 	if err != nil {
 		return nil, err
 	}
-	jsn, ok := f.(interface{}).(map[string]interface{}) // f is pointer point to map struct
+	jsn, ok := f.(map[string]interface{}) // f is pointer point to map struct
 	if !ok {
 		return nil, ErrorVmessPayloadParseFail
 	}

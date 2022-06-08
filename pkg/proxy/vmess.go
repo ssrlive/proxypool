@@ -31,7 +31,7 @@ type Vmess struct {
 	HTTP2Opts      HTTP2Options      `yaml:"h2-opts,omitempty" json:"h2-opts,omitempty"`
 	TLS            bool              `yaml:"tls,omitempty" json:"tls,omitempty"`
 	SkipCertVerify bool              `yaml:"skip-cert-verify,omitempty" json:"skip-cert-verify,omitempty"`
-	WSOpts         *WSOptions        `yaml:"ws-opts,omitempty" json:"ws-opts,omitempty"`
+	WSOpts         WSOptions         `yaml:"ws-opts,omitempty" json:"ws-opts,omitempty"`
 	WSPath         string            `yaml:"ws-path,omitempty" json:"ws-path,omitempty"`
 	WSHeaders      map[string]string `yaml:"ws-headers,omitempty" json:"ws-headers,omitempty"`
 }
@@ -64,8 +64,6 @@ func (v *Vmess) CompatibilityFixes() {
 		if len(v.WSOpts.Headers) == 0 {
 			v.WSOpts.Headers = v.WSHeaders
 		}
-	} else {
-		v.WSOpts = nil
 	}
 	v.WSPath = ""
 	v.WSHeaders = nil
@@ -279,7 +277,7 @@ func ParseVmessLink(link string) (*Vmess, error) {
 			HTTP2Opts:      h2Opt,
 			SkipCertVerify: true,
 			ServerName:     server,
-			WSOpts: &WSOptions{
+			WSOpts: WSOptions{
 				Path:    path,
 				Headers: wsHeaders,
 			},
@@ -358,7 +356,7 @@ func ParseVmessLink(link string) (*Vmess, error) {
 			ServerName:     vmessJson.Host,
 			TLS:            tls,
 			SkipCertVerify: true,
-			WSOpts: &WSOptions{
+			WSOpts: WSOptions{
 				Path:    vmessJson.Path,
 				Headers: wsHeaders,
 			},

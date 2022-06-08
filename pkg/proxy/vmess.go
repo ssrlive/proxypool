@@ -22,18 +22,16 @@ var (
 
 type Vmess struct {
 	Base
-	UUID           string            `yaml:"uuid" json:"uuid"`
-	AlterID        int               `yaml:"alterId" json:"alterId"`
-	Cipher         string            `yaml:"cipher" json:"cipher"`
-	Network        string            `yaml:"network,omitempty" json:"network,omitempty"`
-	ServerName     string            `yaml:"servername,omitempty" json:"servername,omitempty"`
-	HTTPOpts       HTTPOptions       `yaml:"http-opts,omitempty" json:"http-opts,omitempty"`
-	HTTP2Opts      HTTP2Options      `yaml:"h2-opts,omitempty" json:"h2-opts,omitempty"`
-	TLS            bool              `yaml:"tls,omitempty" json:"tls,omitempty"`
-	SkipCertVerify bool              `yaml:"skip-cert-verify,omitempty" json:"skip-cert-verify,omitempty"`
-	WSOpts         WSOptions         `yaml:"ws-opts,omitempty" json:"ws-opts,omitempty"`
-	WSPath         string            `yaml:"ws-path,omitempty" json:"ws-path,omitempty"`
-	WSHeaders      map[string]string `yaml:"ws-headers,omitempty" json:"ws-headers,omitempty"`
+	UUID           string       `yaml:"uuid" json:"uuid"`
+	AlterID        int          `yaml:"alterId" json:"alterId"`
+	Cipher         string       `yaml:"cipher" json:"cipher"`
+	Network        string       `yaml:"network,omitempty" json:"network,omitempty"`
+	ServerName     string       `yaml:"servername,omitempty" json:"servername,omitempty"`
+	HTTPOpts       HTTPOptions  `yaml:"http-opts,omitempty" json:"http-opts,omitempty"`
+	HTTP2Opts      HTTP2Options `yaml:"h2-opts,omitempty" json:"h2-opts,omitempty"`
+	TLS            bool         `yaml:"tls,omitempty" json:"tls,omitempty"`
+	SkipCertVerify bool         `yaml:"skip-cert-verify,omitempty" json:"skip-cert-verify,omitempty"`
+	WSOpts         *WSOptions   `yaml:"ws-opts,omitempty" json:"ws-opts,omitempty"`
 }
 
 type WSOptions struct {
@@ -52,84 +50,55 @@ type HTTP2Options struct {
 	Path string   `yaml:"path,omitempty" json:"path,omitempty"` // 暂只处理一个Path
 }
 
-// type GrpcOptions struct {
-// 	GrpcServiceName string `proxy:"grpc-service-name,omitempty"`
-// }
+func (v *Vmess) UnmarshalJSON(data []byte) error {
+	tmp := struct {
+		Base
+		UUID           string                 `yaml:"uuid" json:"uuid"`
+		AlterID        int                    `yaml:"alterId" json:"alterId"`
+		Cipher         string                 `yaml:"cipher" json:"cipher"`
+		Network        string                 `yaml:"network,omitempty" json:"network,omitempty"`
+		ServerName     string                 `yaml:"servername,omitempty" json:"servername,omitempty"`
+		HTTPOpts       HTTPOptions            `yaml:"http-opts,omitempty" json:"http-opts,omitempty"`
+		HTTP2Opts      HTTP2Options           `yaml:"h2-opts,omitempty" json:"h2-opts,omitempty"`
+		TLS            bool                   `yaml:"tls,omitempty" json:"tls,omitempty"`
+		SkipCertVerify bool                   `yaml:"skip-cert-verify,omitempty" json:"skip-cert-verify,omitempty"`
+		WsOpts         map[string]interface{} `yaml:"ws-opts,omitempty" json:"ws-opts,omitempty"`
+		WSPath         string                 `yaml:"ws-path,omitempty" json:"ws-path,omitempty"`
+		WSHeaders      map[string]string      `yaml:"ws-headers,omitempty" json:"ws-headers,omitempty"`
+	}{}
 
-func (v *Vmess) CompatibilityFixes() {
-	if v.Network == "ws" {
-		if v.WSOpts.Path == "" {
-			v.WSOpts.Path = v.WSPath
-		}
-		if len(v.WSOpts.Headers) == 0 {
-			v.WSOpts.Headers = v.WSHeaders
-		}
+	err := json.Unmarshal(data, &tmp)
+	if err != nil {
+		return err
 	}
-	v.WSPath = ""
-	v.WSHeaders = nil
-}
 
-//
-// Override JSON Marshalling in GO
-// This code looks stupid, but it does what I want:
-// Remove field "ws-opts" while "network" is not "ws"
-//
-// FIXME: Who can tell me the right way?
-//
-func (v Vmess) MarshalJSON() ([]byte, error) {
-	if v.Network == "ws" {
-		x := struct {
-			Base
-			UUID           string       `yaml:"uuid" json:"uuid"`
-			AlterID        int          `yaml:"alterId" json:"alterId"`
-			Cipher         string       `yaml:"cipher" json:"cipher"`
-			Network        string       `yaml:"network,omitempty" json:"network,omitempty"`
-			ServerName     string       `yaml:"servername,omitempty" json:"servername,omitempty"`
-			HTTPOpts       HTTPOptions  `yaml:"http-opts,omitempty" json:"http-opts,omitempty"`
-			HTTP2Opts      HTTP2Options `yaml:"h2-opts,omitempty" json:"h2-opts,omitempty"`
-			TLS            bool         `yaml:"tls,omitempty" json:"tls,omitempty"`
-			SkipCertVerify bool         `yaml:"skip-cert-verify,omitempty" json:"skip-cert-verify,omitempty"`
-			WSOpts         WSOptions    `yaml:"ws-opts,omitempty" json:"ws-opts,omitempty"`
-		}{
-			Base:           v.Base,
-			UUID:           v.UUID,
-			AlterID:        v.AlterID,
-			Cipher:         v.Cipher,
-			Network:        v.Network,
-			ServerName:     v.ServerName,
-			HTTPOpts:       v.HTTPOpts,
-			HTTP2Opts:      v.HTTP2Opts,
-			TLS:            v.TLS,
-			SkipCertVerify: v.SkipCertVerify,
-			WSOpts:         v.WSOpts,
+	v.Base = tmp.Base
+	v.UUID = tmp.UUID
+	v.AlterID = tmp.AlterID
+	v.Cipher = tmp.Cipher
+	v.Network = tmp.Network
+	v.ServerName = tmp.ServerName
+	v.HTTPOpts = tmp.HTTPOpts
+	v.HTTP2Opts = tmp.HTTP2Opts
+	v.TLS = tmp.TLS
+	v.SkipCertVerify = tmp.SkipCertVerify
+	if tmp.Network == "ws" {
+		wsOpts := WSOptions{}
+		if tmp.WsOpts != nil {
+			if path, ok := tmp.WsOpts["path"].(string); ok {
+				wsOpts.Path = path
+			}
+			if hdr, ok := tmp.WsOpts["headers"].(map[string]string); ok {
+				wsOpts.Headers = hdr
+			}
+		} else {
+			wsOpts.Path = tmp.WSPath
+			wsOpts.Headers = tmp.WSHeaders
 		}
-		return json.Marshal(x)
-	} else {
-		x := struct {
-			Base
-			UUID           string       `yaml:"uuid" json:"uuid"`
-			AlterID        int          `yaml:"alterId" json:"alterId"`
-			Cipher         string       `yaml:"cipher" json:"cipher"`
-			Network        string       `yaml:"network,omitempty" json:"network,omitempty"`
-			ServerName     string       `yaml:"servername,omitempty" json:"servername,omitempty"`
-			HTTPOpts       HTTPOptions  `yaml:"http-opts,omitempty" json:"http-opts,omitempty"`
-			HTTP2Opts      HTTP2Options `yaml:"h2-opts,omitempty" json:"h2-opts,omitempty"`
-			TLS            bool         `yaml:"tls,omitempty" json:"tls,omitempty"`
-			SkipCertVerify bool         `yaml:"skip-cert-verify,omitempty" json:"skip-cert-verify,omitempty"`
-		}{
-			Base:           v.Base,
-			UUID:           v.UUID,
-			AlterID:        v.AlterID,
-			Cipher:         v.Cipher,
-			Network:        v.Network,
-			ServerName:     v.ServerName,
-			HTTPOpts:       v.HTTPOpts,
-			HTTP2Opts:      v.HTTP2Opts,
-			TLS:            v.TLS,
-			SkipCertVerify: v.SkipCertVerify,
-		}
-		return json.Marshal(x)
+		v.WSOpts = &wsOpts
 	}
+
+	return nil
 }
 
 func (v Vmess) Identifier() string {
@@ -340,12 +309,14 @@ func ParseVmessLink(link string) (*Vmess, error) {
 			HTTP2Opts:      h2Opt,
 			SkipCertVerify: true,
 			ServerName:     server,
-			WSOpts: WSOptions{
+		}
+		if v.Network == "ws" {
+			v.WSOpts = &WSOptions{
 				Path:    path,
 				Headers: wsHeaders,
-			},
+			}
 		}
-		v.CompatibilityFixes()
+
 		return &v, nil
 	} else {
 		// V2rayN ref: https://github.com/2dust/v2rayN/wiki/%E5%88%86%E4%BA%AB%E9%93%BE%E6%8E%A5%E6%A0%BC%E5%BC%8F%E8%AF%B4%E6%98%8E(ver-2)
@@ -419,12 +390,15 @@ func ParseVmessLink(link string) (*Vmess, error) {
 			ServerName:     vmessJson.Host,
 			TLS:            tls,
 			SkipCertVerify: true,
-			WSOpts: WSOptions{
+		}
+
+		if v.Network == "ws" {
+			v.WSOpts = &WSOptions{
 				Path:    vmessJson.Path,
 				Headers: wsHeaders,
-			},
+			}
 		}
-		v.CompatibilityFixes()
+
 		return &v, nil
 	}
 }

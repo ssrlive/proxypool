@@ -85,6 +85,8 @@ func (v *Vmess) UnmarshalJSON(data []byte) error {
 	if tmp.Network == "ws" {
 		if tmp.WSOpts.Path == "" {
 			tmp.WSOpts.Path = tmp.WSPath
+		}
+		if tmp.WSOpts.Headers == nil {
 			tmp.WSOpts.Headers = tmp.WSHeaders
 		}
 		v.WSOpts = &tmp.WSOpts

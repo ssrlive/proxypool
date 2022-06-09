@@ -89,7 +89,10 @@ func (v *Vmess) UnmarshalJSON(data []byte) error {
 		if tmp.WSOpts.Headers == nil {
 			tmp.WSOpts.Headers = tmp.WSHeaders
 		}
-		v.WSOpts = &tmp.WSOpts
+		v.WSOpts = &WSOptions{
+			Path:    tmp.WSOpts.Path,
+			Headers: tmp.WSOpts.Headers,
+		}
 	}
 
 	return nil

@@ -115,7 +115,7 @@ func setupRouter() {
 		} else if proxyTypes == "all" {
 			proxies := appcache.GetProxies("allproxies")
 			clash := provider.Clash{
-				provider.Base{
+				Base: provider.Base{
 					Proxies:    &proxies,
 					Types:      proxyTypes,
 					Country:    proxyCountry,
@@ -128,7 +128,7 @@ func setupRouter() {
 		} else {
 			proxies := appcache.GetProxies("proxies")
 			clash := provider.Clash{
-				provider.Base{
+				Base: provider.Base{
 					Proxies:    &proxies,
 					Types:      proxyTypes,
 					Country:    proxyCountry,

@@ -120,7 +120,7 @@ func (v Vmess) ToClash() string {
 
 func (v Vmess) ToSurge() string {
 	// node2 = vmess, server, port, username=, ws=true, ws-path=, ws-headers=
-	if v.Network == "ws" {
+	if v.Network == "ws" && v.WSOpts != nil {
 		wsHeasers := ""
 		for k, v := range v.WSOpts.Headers {
 			if wsHeasers == "" {

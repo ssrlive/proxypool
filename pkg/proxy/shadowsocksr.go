@@ -33,6 +33,7 @@ type ShadowsocksR struct {
 	ProtocolParam string `yaml:"protocol-param,omitempty" json:"protocol-param,omitempty"`
 	Obfs          string `yaml:"obfs" json:"obfs"`
 	ObfsParam     string `yaml:"obfs-param,omitempty" json:"obfs-param,omitempty"`
+	Group         string `yaml:"group,omitempty" json:"group,omitempty"`
 	Ot_enable     int    `yaml:"ot_enable,omitempty" json:"ot_enable,omitempty"`
 	Ot_domain     string `yaml:"ot_domain,omitempty" json:"ot_domain,omitempty"`
 	Ot_path       string `yaml:"ot_path,omitempty" json:"ot_path,omitempty"`
@@ -67,21 +68,38 @@ func (ssr ShadowsocksR) Clone() Proxy {
 	return &ssr
 }
 
-// https://github.com/HMBSbige/ShadowsocksR-Windows/wiki/SSR-QRcode-scheme
+// https://github.com/ShadowsocksR-Live/shadowsocksr-native/wiki/QR-code-scheme
 func (ssr ShadowsocksR) Link() (link string) {
 	payload := fmt.Sprintf("%s:%d:%s:%s:%s:%s",
 		ssr.Server, ssr.Port, ssr.Protocol, ssr.Cipher, ssr.Obfs, tool.Base64EncodeString(ssr.Password, true))
 	query := url.Values{}
-	query.Add("obfsparam", tool.Base64EncodeString(ssr.ObfsParam, true))
-	query.Add("protoparam", tool.Base64EncodeString(ssr.ProtocolParam, true))
-	//query.Add("remarks", tool.Base64EncodeString(ssr.Name, true))
-	query.Add("group", tool.Base64EncodeString("proxypoolss.herokuapp.com", true))
+	if len(ssr.ObfsParam) > 0 {
+		query.Add("obfsparam", tool.Base64EncodeString(ssr.ObfsParam, true))
+	}
+	if len(ssr.ProtocolParam) > 0 {
+		query.Add("protoparam", tool.Base64EncodeString(ssr.ProtocolParam, true))
+	}
+	if len(ssr.Name) > 0 {
+		query.Add("remarks", tool.Base64EncodeString(ssr.Name, true))
+	}
+	if len(ssr.Group) > 0 {
+		query.Add("group", tool.Base64EncodeString(ssr.Group, true))
+	}
 	if ssr.Ot_enable != 0 {
 		query.Add("ot_enable", "1")
-		query.Add("ot_domain", tool.Base64EncodeString(ssr.Ot_domain, true))
-		query.Add("ot_path", tool.Base64EncodeString(ssr.Ot_path, true))
+		if len(ssr.Ot_domain) > 0 {
+			query.Add("ot_domain", tool.Base64EncodeString(ssr.Ot_domain, true))
+		}
+		if len(ssr.Ot_path) > 0 {
+			query.Add("ot_path", tool.Base64EncodeString(ssr.Ot_path, true))
+		}
 	}
-	payload = tool.Base64EncodeString(fmt.Sprintf("%s/?%s", payload, query.Encode()), true)
+	queryStr := query.Encode()
+	if len(queryStr) > 0 {
+		payload = tool.Base64EncodeString(fmt.Sprintf("%s/?%s", payload, queryStr), true)
+	} else {
+		payload = tool.Base64EncodeString(payload, true)
+	}
 	return fmt.Sprintf("ssr://%s", payload)
 }
 
@@ -111,101 +129,67 @@ func ParseSSRLink(link string) (*ShadowsocksR, error) {
 	// base info
 	server := strings.ToLower(ssrpath[0])
 	port, _ := strconv.Atoi(ssrpath[1])
+
 	protocol := strings.ToLower(ssrpath[2])
+	if strings.HasSuffix(protocol, "_compatible") {
+		protocol = strings.ReplaceAll(protocol, "_compatible", "")
+	}
+
 	cipher := strings.ToLower(ssrpath[3])
+
 	obfs := strings.ToLower(ssrpath[4])
+	if strings.HasSuffix(obfs, "_compatible") {
+		obfs = strings.ReplaceAll(obfs, "_compatible", "")
+	}
+
 	password, err := tool.Base64DecodeString(ssrpath[5])
 	if err != nil {
 		return nil, ErrorPasswordParseFail
 	}
 
-	if len(infoPayload) == 1 {
-		return &ShadowsocksR{
-			Base: Base{
-				Name:   "",
-				Server: server,
-				Port:   port,
-				Type:   "ssr",
-			},
-			Password:      password,
-			Cipher:        cipher,
-			Protocol:      protocol,
-			ProtocolParam: "",
-			Obfs:          obfs,
-			ObfsParam:     "",
-			Ot_enable:     0,
-			Ot_domain:     "",
-			Ot_path:       "",
-		}, nil
-	}
+	var remarks, group, protocolParam, obfsParam, ot_domain, ot_path string
+	var ot_enable int
 
-	moreInfo, _ := url.ParseQuery(infoPayload[1])
+	if len(infoPayload) == 2 {
+		moreInfo, _ := url.ParseQuery(infoPayload[1])
 
-	// remarks
-	//remarks, err := tool.Base64DecodeString(moreInfo.Get("remarks"))
-	//if err != nil {
-	//	remarks = ""
-	//	err = nil
-	//}
-	//if strings.ContainsAny(remarks, "\t\r\n ") {
-	//	remarks = strings.ReplaceAll(remarks, "\t", "")
-	//	remarks = strings.ReplaceAll(remarks, "\r", "")
-	//	remarks = strings.ReplaceAll(remarks, "\n", "")
-	//}
-	//if strings.ContainsAny(remarks, ":/.- ") {
-	//	remarks = strings.ReplaceAll(remarks, ":", "_")
-	//	remarks = strings.ReplaceAll(remarks, "/", "_")
-	//	remarks = strings.ReplaceAll(remarks, ".", "_")
-	//	remarks = strings.ReplaceAll(remarks, "-", "_")
-	//	remarks = strings.ReplaceAll(remarks, " ", "_")
-	//}
-	//remarks = tool.ReplaceChineseCharWith(remarks, "_")
+		// remarks
+		remarks, _ = tool.Base64DecodeString(moreInfo.Get("remarks"))
+		if strings.ContainsAny(remarks, "\t\r\n ") {
+			remarks = strings.ReplaceAll(remarks, "\t", "")
+			remarks = strings.ReplaceAll(remarks, "\r", "")
+			remarks = strings.ReplaceAll(remarks, "\n", "")
+		}
+		if strings.ContainsAny(remarks, ":/.- ") {
+			remarks = strings.ReplaceAll(remarks, ":", "_")
+			remarks = strings.ReplaceAll(remarks, "/", "_")
+			remarks = strings.ReplaceAll(remarks, ".", "_")
+			remarks = strings.ReplaceAll(remarks, "-", "_")
+			remarks = strings.ReplaceAll(remarks, " ", "_")
+		}
+		remarks = tool.ReplaceChineseCharWith(remarks, "_")
 
-	// protocol param
-	protocolParam, err := tool.Base64DecodeString(moreInfo.Get("protoparam"))
-	if err != nil {
-		return nil, ErrorProtocolParamParseFail
-	}
-	if tool.ContainChineseChar(protocolParam) {
-		protocolParam = ""
-	}
-	if strings.HasSuffix(protocol, "_compatible") {
-		protocol = strings.ReplaceAll(protocol, "_compatible", "")
-	}
+		group, _ = tool.Base64DecodeString(moreInfo.Get("group"))
 
-	// obfs param
-	obfsParam, err := tool.Base64DecodeString(moreInfo.Get("obfsparam"))
-	if err != nil {
-		return nil, ErrorObfsParamParseFail
-	}
-	if tool.ContainChineseChar(obfsParam) {
-		obfsParam = ""
-	}
-	if strings.HasSuffix(obfs, "_compatible") {
-		obfs = strings.ReplaceAll(obfs, "_compatible", "")
-	}
+		protocolParam, _ = tool.Base64DecodeString(moreInfo.Get("protoparam"))
+		if tool.ContainChineseChar(protocolParam) {
+			protocolParam = ""
+		}
 
-	// ot_enable
-	ot_enable, err := strconv.Atoi(moreInfo.Get("ot_enable"))
-	if err != nil {
-		ot_enable = 0
-	}
+		obfsParam, _ = tool.Base64DecodeString(moreInfo.Get("obfsparam"))
+		if tool.ContainChineseChar(obfsParam) {
+			obfsParam = ""
+		}
 
-	// ot_domain
-	ot_domain, err := tool.Base64DecodeString(moreInfo.Get("ot_domain"))
-	if err != nil {
-		ot_domain = ""
-	}
-
-	// ot_path
-	ot_path, err := tool.Base64DecodeString(moreInfo.Get("ot_path"))
-	if err != nil {
-		ot_path = ""
+		// SSRoT
+		ot_enable, _ = strconv.Atoi(moreInfo.Get("ot_enable"))
+		ot_domain, _ = tool.Base64DecodeString(moreInfo.Get("ot_domain"))
+		ot_path, _ = tool.Base64DecodeString(moreInfo.Get("ot_path"))
 	}
 
 	return &ShadowsocksR{
 		Base: Base{
-			Name:   "",
+			Name:   remarks,
 			Server: server,
 			Port:   port,
 			Type:   "ssr",
@@ -216,6 +200,7 @@ func ParseSSRLink(link string) (*ShadowsocksR, error) {
 		ProtocolParam: protocolParam,
 		Obfs:          obfs,
 		ObfsParam:     obfsParam,
+		Group:         group,
 		Ot_enable:     ot_enable,
 		Ot_domain:     ot_domain,
 		Ot_path:       ot_path,

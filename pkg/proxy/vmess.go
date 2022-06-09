@@ -175,15 +175,17 @@ func (v Vmess) toLinkJson() vmessLinkJson {
 		Id:   v.UUID,
 		Aid:  strconv.Itoa(v.AlterID),
 		Net:  v.Network,
-		Path: v.WSOpts.Path,
 		Host: v.ServerName,
 		V:    "2",
 	}
 	if v.TLS {
 		vj.Tls = "tls"
 	}
-	if host, ok := v.WSOpts.Headers["HOST"]; ok && host != "" {
-		vj.Host = host
+	if v.WSOpts != nil {
+		vj.Path = v.WSOpts.Path
+		if host, ok := v.WSOpts.Headers["HOST"]; ok && host != "" {
+			vj.Host = host
+		}
 	}
 	return vj
 }

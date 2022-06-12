@@ -25,3 +25,4 @@ jobs:
           registry: docker.pkg.github.com
           push: true
           tags: ${{ env.IMAGE_TAG }}
+

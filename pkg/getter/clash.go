@@ -52,7 +52,7 @@ func (c *Clash) Get() proxy.ProxyList {
 // clash 文檔有效性檢查
 //
 func buildClashDoc(fullcheck bool, body []byte) []byte {
-	regexp, _ := regexp.Compile(`-\s*{`)
+	regexp0, _ := regexp.Compile(`-\s*{`)
 
 	tmp := strings.Split(strings.ReplaceAll(string(body), "\r\n", "\n"), "\n")
 	var arr []string
@@ -62,7 +62,16 @@ func buildClashDoc(fullcheck bool, body []byte) []byte {
 			// 出於性能考慮, 不再進一步檢查, 直接返回.
 			return body
 		}
-		match := regexp.FindStringIndex(s0)
+		if index == 0 {
+			// 如果第一行是 "port: 7890" 字样，就认定为 clash 格式，直接返回。
+			regexp2, _ := regexp.Compile(`^port:\s*[0-9]+`)
+			match2 := regexp2.FindStringIndex(s0)
+			if match2 != nil {
+				return body
+			}
+		}
+
+		match := regexp0.FindStringIndex(s0)
 		if match == nil {
 			continue
 		}

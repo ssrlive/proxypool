@@ -7,7 +7,7 @@ go 1.18
 require (
 	github.com/Dreamacro/clash v1.11.0
 	github.com/ghodss/yaml v1.0.0
-	github.com/gin-contrib/cache v1.1.0
+	github.com/gin-contrib/cache v1.2.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/gocolly/colly v1.2.0
 	github.com/heroku/x v0.0.50
@@ -56,7 +56,7 @@ require (
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
-	github.com/memcachier/mc v2.0.1+incompatible // indirect
+	github.com/memcachier/mc/v3 v3.0.3 // indirect
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect

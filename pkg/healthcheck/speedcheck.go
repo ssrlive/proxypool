@@ -151,8 +151,8 @@ func ProxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 	if proxy.GoodNodeThatClashUnsupported(p) {
 		host := pmap["server"].(string)
 		port := fmt.Sprint(pmap["port"].(int))
-		if _, err := netConnectivity(host, port); err == nil {
-			return 200000, nil
+		if _, interval, err := netConnectivity(host, port); err == nil {
+			return float64(interval.Milliseconds()), nil
 		} else {
 			return -1, err
 		}

@@ -70,7 +70,7 @@ func CleanBadProxiesWithGrpool(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 }
 
 // Return 0 for error
-func testDelay(p proxy.Proxy) (delay uint16, err error) {
+func testDelay(p proxy.Proxy) (delay time.Duration, err error) {
 	pmap := make(map[string]interface{})
 	err = json.Unmarshal([]byte(p.String()), &pmap)
 	if err != nil {
@@ -84,8 +84,8 @@ func testDelay(p proxy.Proxy) (delay uint16, err error) {
 	if proxy.GoodNodeThatClashUnsupported(p) {
 		host := pmap["server"].(string)
 		port := fmt.Sprint(pmap["port"].(int))
-		if _, err := netConnectivity(host, port); err == nil {
-			return 200, nil
+		if _, interval, err := netConnectivity(host, port); err == nil {
+			return interval, nil
 		} else {
 			return 0, err
 		}
@@ -97,51 +97,39 @@ func testDelay(p proxy.Proxy) (delay uint16, err error) {
 		return 0, err
 	}
 
-	// Custom context time to avoid unexpected connection block due to dependency
-	respC := make(chan uint16)
-	m := sync.Mutex{}
-	closed := false
+	respC := make(chan struct {
+		time.Duration
+		error
+	})
 	defer close(respC)
 	go func() {
 		sTime := time.Now()
 		err = HTTPHeadViaProxy(clashProxy, "http://www.gstatic.com/generate_204")
-		m.Lock()
-		if closed {
-			m.Unlock()
-			return
-		}
-		m.Unlock()
-		if err != nil {
-			respC <- 0
-			return
-		}
-		fTime := time.Now()
-		d := uint16(fTime.Sub(sTime) / time.Millisecond)
-		respC <- d
+		respC <- struct {
+			time.Duration
+			error
+		}{time.Since(sTime), err}
 	}()
 
-	select {
-	case delay = <-respC:
-		m.Lock()
-		closed = true
-		m.Unlock()
-		return delay, nil
-	case <-time.After(DelayTimeout * 2):
-		log.Debugln("unexpected delay check timeout error in proxy %s\n", p.Link())
-		m.Lock()
-		closed = true
-		m.Unlock()
+	pair, ok := <-respC
+
+	if ok {
+		return pair.Duration, pair.error
+	} else {
 		return 0, context.DeadlineExceeded
 	}
 }
 
-func netConnectivity(host string, port string) (string, error) {
+func netConnectivity(host string, port string) (string, time.Duration, error) {
 	result := ""
 	timeout := time.Second * 3
+	beginning := time.Now()
+	interval := timeout
 	conn, err := net.DialTimeout("tcp", net.JoinHostPort(host, port), timeout)
 	if conn != nil {
-		result, _, _ = net.SplitHostPort(conn.RemoteAddr().String())
 		defer conn.Close()
+		result, _, _ = net.SplitHostPort(conn.RemoteAddr().String())
+		interval = time.Since(beginning)
 	}
-	return result, err
+	return result, interval, err
 }

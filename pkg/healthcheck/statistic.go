@@ -1,11 +1,15 @@
 package healthcheck
 
-import "github.com/ssrlive/proxypool/pkg/proxy"
+import (
+	"time"
+
+	"github.com/ssrlive/proxypool/pkg/proxy"
+)
 
 // Statistic for a proxy
 type Stat struct {
 	Speed    float64
-	Delay    uint16
+	Delay    time.Duration
 	ReqCount uint16
 	Relay    bool
 	Pool     bool
@@ -33,7 +37,7 @@ func (ps *Stat) UpdatePSSpeed(speed float64) {
 }
 
 // Update delay for a Stat
-func (ps *Stat) UpdatePSDelay(delay uint16) {
+func (ps *Stat) UpdatePSDelay(delay time.Duration) {
 	ps.Delay = delay
 }
 

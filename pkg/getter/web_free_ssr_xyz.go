@@ -42,14 +42,6 @@ func (w *WebFreessrXyz) Get2ChanWG(pc chan proxy.Proxy, wg *sync.WaitGroup) {
 	}
 }
 
-func (w *WebFreessrXyz) Get2Chan(pc chan proxy.Proxy) {
-	nodes := w.Get()
-	log.Infoln("STATISTIC: FreeSSRxyz\tcount=%d\turl=%s", len(nodes), "api.free-ssr.xyz")
-	for _, node := range nodes {
-		pc <- node
-	}
-}
-
 func freessrxyzFetch(link string) proxy.ProxyList {
 	resp, err := tool.GetHttpClient().Get(link)
 	if err != nil {

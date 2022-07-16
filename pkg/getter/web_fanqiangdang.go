@@ -88,11 +88,3 @@ func (w *WebFanqiangdang) Get2ChanWG(pc chan proxy.Proxy, wg *sync.WaitGroup) {
 		pc <- node
 	}
 }
-
-func (w *WebFanqiangdang) Get2Chan(pc chan proxy.Proxy) {
-	nodes := w.Get()
-	log.Infoln("STATISTIC: Fanqiangdang\tcount=%d\turl=%s", len(nodes), w.Url)
-	for _, node := range nodes {
-		pc <- node
-	}
-}

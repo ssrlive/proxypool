@@ -44,14 +44,6 @@ func (w *WebFuzz) Get2ChanWG(pc chan proxy.Proxy, wg *sync.WaitGroup) {
 	}
 }
 
-func (w *WebFuzz) Get2Chan(pc chan proxy.Proxy) {
-	nodes := w.Get()
-	log.Infoln("STATISTIC: WebFuzz\tcount=%d\turl=%s", len(nodes), w.Url)
-	for _, node := range nodes {
-		pc <- node
-	}
-}
-
 func NewWebFuzzGetter(options tool.Options) (getter Getter, err error) {
 	urlInterface, found := options["url"]
 	if found {

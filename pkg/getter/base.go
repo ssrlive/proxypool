@@ -11,7 +11,6 @@ import (
 // functions for getters
 type Getter interface {
 	Get() proxy.ProxyList
-	Get2Chan(pc chan proxy.Proxy)
 	Get2ChanWG(pc chan proxy.Proxy, wg *sync.WaitGroup)
 }
 

@@ -92,14 +92,6 @@ func buildClashDoc(fullcheck bool, body []byte) []byte {
 	return []byte(strings.Join(arr, "\n"))
 }
 
-func (c *Clash) Get2Chan(pc chan proxy.Proxy) {
-	nodes := c.Get()
-	log.Infoln("STATISTIC: Clash\tcount=%d\turl=%s", len(nodes), c.Url)
-	for _, node := range nodes {
-		pc <- node
-	}
-}
-
 func (c *Clash) Get2ChanWG(pc chan proxy.Proxy, wg *sync.WaitGroup) {
 	defer wg.Done()
 	nodes := c.Get()

@@ -86,6 +86,8 @@ func CrawlGo() {
 
 	proxies = healthcheck.CleanBadProxiesWithGrpool(proxies)
 
+	// proxies = healthcheck.CleanBadProxies(proxies)
+
 	log.Infoln("CrawlGo clash usable proxy count: %d", len(proxies))
 
 	// Format name like US_01 sorted by country

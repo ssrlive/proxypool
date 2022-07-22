@@ -3,11 +3,17 @@ package healthcheck
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io/ioutil"
 	"net"
+	"net/http"
+	"net/url"
+	"strings"
 	"sync"
 	"time"
 
+	"github.com/antchfx/htmlquery"
 	"github.com/ssrlive/proxypool/log"
 	"github.com/ssrlive/proxypool/pkg/proxy"
 
@@ -132,4 +138,84 @@ func netConnectivity(host string, port string) (string, time.Duration, error) {
 		interval = time.Since(beginning)
 	}
 	return result, interval, err
+}
+
+func CleanBadProxies(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
+	cproxies = make(proxy.ProxyList, 0, 500)
+	for _, p := range proxies {
+		delay, err := testDelay(p)
+		if err == nil && delay != 0 {
+			cproxies = append(cproxies, p)
+			if ps, ok := ProxyStats.Find(p); ok {
+				ps.UpdatePSDelay(delay)
+			} else {
+				ps = &Stat{
+					Id:    p.Identifier(),
+					Delay: delay,
+				}
+				ProxyStats = append(ProxyStats, *ps)
+			}
+		}
+	}
+	return
+}
+
+func PingFromChina(host string, port string) (bool, time.Duration, error) {
+	beginning := time.Now()
+
+	url1 := "https://tool.chinaz.com/port?host=" + host + "&port=" + port
+	doc, err := htmlquery.LoadURL(url1)
+	if err != nil {
+		return false, 0, err
+	}
+	title, err := htmlquery.Query(doc, "//title")
+	if err != nil {
+		return false, 0, err
+	}
+	if title.FirstChild.Data != host+"网站端口扫描结果" {
+		return false, 0, errors.New("title not match")
+	}
+	inputs, err := htmlquery.QueryAll(doc, "//input")
+	if err != nil {
+		return false, 0, err
+	}
+	var encoded string
+	var found bool
+	for _, input := range inputs {
+		for _, a := range input.Attr {
+			if a.Key == "id" && a.Val == "encode" {
+				found = true
+				break
+			}
+		}
+		if found {
+			for _, a := range input.Attr {
+				if a.Key == "value" {
+					encoded = a.Val
+					break
+				}
+			}
+			break
+		}
+	}
+	if encoded == "" {
+		return false, 0, errors.New("encode not found")
+	}
+
+	url2 := "https://tool.chinaz.com/iframe.ashx?t=port"
+	resp, err := http.PostForm(url2, url.Values{"host": {host}, "port": {port}, "encode": {encoded}})
+	if err != nil {
+		return false, 0, err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return false, 0, err
+	}
+
+	result := strings.Contains(string(body), "status:1")
+
+	interval := time.Since(beginning)
+
+	return result, interval, nil
 }

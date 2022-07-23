@@ -6,6 +6,9 @@ on:
       - v*-*-*
   pull_request:
 
+env:
+  IMAGE_TAG: ${{ secrets.DOCKERHUB_USERNAME }}/proxypool:proxypool
+
 jobs:
   build:
     name: Build
@@ -25,9 +28,9 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         uses: docker/login-action@v1
         with:
-          registry: ghcr.io
-          username: ssrlive
-          password: ${{ secrets.CR_PAT }}
+          registry: proxypool
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push Docker images
         if: startsWith(github.ref, 'refs/tags/')
         uses: docker/build-push-action@v3
@@ -35,4 +38,4 @@ jobs:
           push: true
           platforms: linux/amd64
           context: .
-          tags: ghcr.io/ssrlive/proxypool:latest
+          tags: ${{ env.IMAGE_TAG }}

@@ -20,7 +20,7 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 	github.com/x-cray/logrus-prefixed-formatter v0.5.2
 	gopkg.in/yaml.v3 v3.0.1
-	gorm.io/driver/postgres v1.3.8
+	gorm.io/driver/postgres v1.3.9
 	gorm.io/gorm v1.23.8
 )
 
@@ -56,7 +56,6 @@ require (
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
-	github.com/memcachier/mc v2.0.1+incompatible // indirect
 	github.com/memcachier/mc/v3 v3.0.3 // indirect
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect

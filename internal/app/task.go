@@ -15,7 +15,7 @@ import (
 	"github.com/ssrlive/proxypool/pkg/proxy"
 )
 
-var location, _ = time.LoadLocation("PRC")
+var location, _ = time.LoadLocation("America/Pheonix")
 
 func CrawlGo() {
 	wg := &sync.WaitGroup{}

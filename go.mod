@@ -11,7 +11,7 @@ require (
 	github.com/gin-contrib/cache v1.2.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/gocolly/colly v1.2.0
-	github.com/heroku/x v0.0.52
+	github.com/heroku/x v0.0.53
 	github.com/ivpusic/grpool v1.0.0
 	github.com/jasonlvhit/gocron v0.0.1
 	github.com/oschwald/geoip2-golang v1.8.0

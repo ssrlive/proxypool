@@ -4,6 +4,7 @@ RUN apk add --no-cache make git
 WORKDIR /proxypool-src
 COPY . /proxypool-src
 RUN go mod download && \
+    go mod tidy && \
     make docker && \
     mv ./bin/proxypool-docker /proxypool
 

@@ -89,6 +89,13 @@ go run main.go -c ./config/config.yaml
 $ docker pull lukemin/ssrlive-proxypool
 ```
 
+下载config.yaml&source.yaml到/path/to/config
+
+```
+$ wget https://raw.githubusercontent.com/ssrlive/proxypool/master/config/config.yaml
+wget https://raw.githubusercontent.com/ssrlive/proxypool/master/config/source.yaml
+```
+
 然后运行 proxypool 即可
 
 ```shell

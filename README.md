@@ -86,7 +86,14 @@ go run main.go -c ./config/config.yaml
 运行下面的命令下载 proxypool 镜像
 
 ```shell
-$ docker pull ghcr.io/ssrlive/proxypool:latest
+$ docker pull lukemin/ssrlive-proxypool
+```
+
+下载config.yaml&source.yaml到/path/to/config
+
+```
+$ wget https://raw.githubusercontent.com/ssrlive/proxypool/master/config/config.yaml
+wget https://raw.githubusercontent.com/ssrlive/proxypool/master/config/source.yaml
 ```
 
 然后运行 proxypool 即可
@@ -96,7 +103,7 @@ $ docker run -d --restart=always \
   --name=proxypool \
   -p 12580:12580 \
   -v /path/to/config:/proxypool-src/config \
-  ghcr.io/ssrlive/proxypool \
+  lukemin/ssrlive-proxypool \
   -c config/config.yaml
 ```
 

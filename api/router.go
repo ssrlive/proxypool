@@ -20,7 +20,7 @@ import (
 	"github.com/ssrlive/proxypool/pkg/provider"
 )
 
-const version = "v0.7.11"
+const version = "v0.7.12"
 
 var router *gin.Engine
 

@@ -102,9 +102,9 @@ wget https://raw.githubusercontent.com/ssrlive/proxypool/master/config/source.ya
 $ docker run -d --restart=always \
   --name=proxypool \
   -p 12580:12580 \
-  -v /path/to/config:/proxypool-src/config \
+  -v /path/to/config:/config \
   lukemin/ssrlive-proxypool \
-  -c config/config.yaml
+  -c /config/config.yaml
 ```
 
 使用 `-p` 参数映射配置文件里的端口  

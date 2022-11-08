@@ -5,7 +5,7 @@ module github.com/ssrlive/proxypool
 go 1.18
 
 require (
-	github.com/Dreamacro/clash v1.11.8
+	github.com/Dreamacro/clash v1.11.12
 	github.com/antchfx/htmlquery v1.2.5
 	github.com/ghodss/yaml v1.0.0
 	github.com/gin-contrib/cache v1.2.0
@@ -36,7 +36,7 @@ require (
 	github.com/go-playground/validator/v10 v10.11.1 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/goccy/go-json v0.9.11 // indirect
-	github.com/gofrs/uuid v4.3.0+incompatible // indirect
+	github.com/gofrs/uuid v4.3.1+incompatible // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/gomodule/redigo v1.8.9 // indirect
@@ -68,9 +68,9 @@ require (
 	github.com/temoto/robotstxt v1.1.2 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
-	golang.org/x/crypto v0.1.0 // indirect
-	golang.org/x/net v0.1.0 // indirect
-	golang.org/x/sys v0.1.0 // indirect
+	golang.org/x/crypto v0.1.1-0.20221024173537-a3485e174077 // indirect
+	golang.org/x/net v0.1.1-0.20221102181756-a1278a7f7ee0 // indirect
+	golang.org/x/sys v0.1.1-0.20221102194838-fc697a31fa06 // indirect
 	golang.org/x/term v0.1.0 // indirect
 	golang.org/x/text v0.4.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect

@@ -5,7 +5,7 @@ module github.com/ssrlive/proxypool
 go 1.18
 
 require (
-	github.com/Dreamacro/clash v1.11.12
+	github.com/Dreamacro/clash v1.12.0
 	github.com/antchfx/htmlquery v1.2.5
 	github.com/ghodss/yaml v1.0.0
 	github.com/gin-contrib/cache v1.2.0
@@ -68,9 +68,9 @@ require (
 	github.com/temoto/robotstxt v1.1.2 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
-	golang.org/x/crypto v0.3.0 // indirect
-	golang.org/x/net v0.2.0 // indirect
-	golang.org/x/sys v0.2.0 // indirect
+	golang.org/x/crypto v0.3.1-0.20221117191849-2c476679df9a // indirect
+	golang.org/x/net v0.2.1-0.20221117215542-ecf7fda6a59e // indirect
+	golang.org/x/sys v0.2.1-0.20221110211117-d684c6f88669 // indirect
 	golang.org/x/term v0.2.0 // indirect
 	golang.org/x/text v0.4.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect

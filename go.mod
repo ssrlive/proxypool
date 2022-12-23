@@ -9,7 +9,7 @@ require (
 	github.com/antchfx/htmlquery v1.2.5
 	github.com/ghodss/yaml v1.0.0
 	github.com/gin-contrib/cache v1.2.0
-	github.com/gin-gonic/gin v1.8.1
+	github.com/gin-gonic/gin v1.8.2
 	github.com/gocolly/colly v1.2.0
 	github.com/heroku/x v0.0.55
 	github.com/ivpusic/grpool v1.0.0
@@ -69,10 +69,10 @@ require (
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	golang.org/x/crypto v0.3.1-0.20221117191849-2c476679df9a // indirect
-	golang.org/x/net v0.2.1-0.20221117215542-ecf7fda6a59e // indirect
-	golang.org/x/sys v0.2.1-0.20221110211117-d684c6f88669 // indirect
-	golang.org/x/term v0.2.0 // indirect
-	golang.org/x/text v0.4.0 // indirect
+	golang.org/x/net v0.4.0 // indirect
+	golang.org/x/sys v0.3.0 // indirect
+	golang.org/x/term v0.3.0 // indirect
+	golang.org/x/text v0.5.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/sourcemap.v1 v1.0.5 // indirect

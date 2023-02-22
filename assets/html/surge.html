@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <title>Free Proxies</title>
+    <meta property="og:description" content="免费的ss、ssr、vmess、trojan节点">
+    <meta name="keywords" content="免费的ss、ssr、vmess、torjan节点">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <!-- <link rel="stylesheet" type="text/css" href="css/client/metron-icon.css" /> -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/sansui233/proxypool-fe/css/client/metron-icon.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/sansui233/proxypool-fe/css/index.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar is-primary pl-2 pr-2" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a href="https://{{ .domain }}" class="navbar-item">
+                <h1 class="title is-4">Free Proxies</h1>
+            </a>
+            <a role="button" class="navbar-burger burger is-white" aria-label="menu" aria-expanded="false" data-target="clients">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+        <div id="clients" class="navbar-menu">
+            <div class="navbar-start is-size-6">
+                <a href="./clash" class="navbar-item"><span class="icon"><i class="metron-clash"></i></span>&nbspClash</a>
+                <a href="./shadowrocket" class="navbar-item"><span class="icon"><i class="metron-shadowrocket"></i></span>&nbspShadowRocket</a>
+                <a href="./surge" class="navbar-item"><span class="icon"><i class="metron-surge"></i></span>&nbspSurge</a>
+                <a href="https://bianyuan.xyz/" class="navbar-item">&nbsp?&nbsp&nbspMore</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Body -->
+    <div class="container">
+        <div class="section pb-0">
+            <h1 class="title is-2"><i class="metron-surge"></i>&nbspSurge</h1>
+        </div>
+        <section class='section'>
+            <h5 class="title is-4 mt-3">配置文件</h5>
+            <div class="table-container mt-2">
+                <table class="table is-fullwidth">
+                    <tbody>
+                        <tr>
+                            <th>Surge配置文件</th>
+                            <td>https://{{ .domain }}/surge/config</td>
+                            <td class="has-text-right"><a href="surge3:///install-config?url=https://{{ .domain }}/surge/config" class="button is-small is-link">一键导入</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <section class="section">
+            <h5 class="title is-4">节点列表</h5>
+            <div class="table-container">
+                <div class="table-container">
+                    <table class="table is-fullwidth">
+                        <tbody>
+                            <tr>
+                                <th>Surge节点</th>
+                                <td>https://{{ .domain }}/surge/proxies</td>
+                                <td class="has-text-right"><button class="button is-small is-primary" onclick="onCopy(this)">复制</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+    <footer class="footer has-text-centered">
+        <!-- 所有使用本代码提供服务的禁止删除、修改版权信息 -->
+        <p>欢迎关注tg频道：<a href="https://t.me/peekfun">@peekfun</a></p>
+        <p>抓取程序已开源：<a href="https://github.com/zu1k/proxypool">zu1k/proxypool</a></p>
+        <p>本程序为fork版：<a href="https://github.com/sansui233/proxypool">sansui233/proxypool</a><br>{{ .version }}</p>
+        <br>
+        <p><b>Theme</b>&nbspby&nbsp<a href="https://github.com/sansui233/" class="has-text-primary"><b>Sansui233</b></a> Powered&nbspby&nbsp<b>Bulma</b></p>
+    </footer>
+    <script src="static/index.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9VK0B43EQ3"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-9VK0B43EQ3');
+    </script>
+</body>
+
+</html>

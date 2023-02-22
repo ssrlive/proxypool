@@ -11,7 +11,6 @@ import (
 
 	"github.com/oschwald/geoip2-golang"
 	"github.com/ssrlive/proxypool/config"
-	bingeoip "github.com/ssrlive/proxypool/internal/bindata/geoip"
 )
 
 var GeoIpDB GeoIP
@@ -25,11 +24,6 @@ func InitGeoIpDB() error {
 	// 判断文件是否存在
 	_, err := os.Stat(geodb)
 	if err != nil && os.IsNotExist(err) {
-		err = bingeoip.RestoreAsset("", flagsPath)
-		if err != nil {
-			panic(err)
-		}
-		err = bingeoip.RestoreAsset("", geodbPath)
 		if err != nil {
 			log.Println("文件不存在, 请自行下载 Geoip2 City 库, 并保存在", geodb)
 			panic(err)

@@ -1,15 +1,17 @@
 package api
 
 import (
+	"fmt"
 	"html/template"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
 	"time"
 
-	binhtml "github.com/ssrlive/proxypool/internal/bindata/html"
 	"github.com/ssrlive/proxypool/log"
+	"golang.org/x/exp/slices"
 
 	"github.com/gin-contrib/cache"
 	"github.com/gin-contrib/cache/persistence"
@@ -29,9 +31,6 @@ func setupRouter() {
 	router = gin.New() // 没有任何中间件的路由
 	store := persistence.NewInMemoryStore(time.Minute)
 	router.Use(gin.Recovery(), cache.SiteCache(store, time.Minute)) // 加上处理panic的中间件，防止遇到panic退出程序
-
-	_ = binhtml.RestoreAssets("", "assets/html") // 恢复静态文件（不恢复问题也不大就是难修改）
-	_ = binhtml.RestoreAssets("", "assets/static")
 
 	temp, err := loadHTMLTemplate() // 加载html模板，模板源存放于html.go中的类似_assetsHtmlSurgeHtml的变量
 	if err != nil {
@@ -312,15 +311,51 @@ func Run() {
 // 返回页面templates
 func loadHTMLTemplate() (t *template.Template, err error) {
 	t = template.New("")
-	for _, fileName := range binhtml.AssetNames() { //fileName带有路径前缀
+	for _, fileName := range AssetNames() { //fileName带有路径前缀
 		if strings.Contains(fileName, "css") {
 			continue
 		}
-		data := binhtml.MustAsset(fileName)          //读取页面数据
+		data := MustAsset(fileName)                  //读取页面数据
 		t, err = t.New(fileName).Parse(string(data)) //生成带路径名称的模板
 		if err != nil {
 			return nil, err
 		}
 	}
 	return t, nil
+}
+
+// AssetNames returns the names of the assets.
+func AssetNames() []string {
+	var _bindata = []string{
+		"assets/html/clash-config-local.yaml",
+		"assets/html/clash-config.yaml",
+		"assets/html/clash.html",
+		"assets/html/index.html",
+		"assets/html/shadowrocket.html",
+		"assets/html/surge.conf",
+		"assets/html/surge.html",
+		"assets/static/index.js",
+	}
+	return _bindata
+}
+
+func MustAsset(name string) []byte {
+	a, err := Asset(name)
+	if err != nil {
+		panic("asset: Asset(" + name + "): " + err.Error())
+	}
+	return a
+}
+
+func Asset(name string) ([]byte, error) {
+	var _bindata = AssetNames()
+	cannonicalName := strings.Replace(name, "\\", "/", -1)
+	if slices.Contains(_bindata, cannonicalName) {
+		contents, err := ioutil.ReadFile(cannonicalName)
+		if err != nil {
+			return nil, fmt.Errorf("Asset %s can't read by error: %v", name, err)
+		}
+		return contents, nil
+	}
+	return nil, fmt.Errorf("Asset %s not found", name)
 }

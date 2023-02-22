@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <title>Free Proxies</title>
+    <meta property="og:description" content="免费的ss、ssr、vmess、trojan节点">
+    <meta name="keywords" content="免费的ss、ssr、vmess、torjan节点">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <!-- <link rel="stylesheet" type="text/css" href="css/client/metron-icon.css" /> -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/sansui233/proxypool-fe/css/client/metron-icon.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/sansui233/proxypool-fe/css/index.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar is-primary pl-2 pr-2" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a href="https://{{ .domain }}" class="navbar-item">
+                <h1 class="title is-4">Free Proxies</h1>
+            </a>
+            <a role="button" class="navbar-burger burger is-white" aria-label="menu" aria-expanded="false" data-target="clients">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+        <div id="clients" class="navbar-menu">
+            <div class="navbar-start is-size-6">
+                <a href="./clash" class="navbar-item"><span class="icon"><i class="metron-clash"></i></span>&nbspClash</a>
+                <a href="./shadowrocket" class="navbar-item"><span class="icon"><i class="metron-shadowrocket"></i></span>&nbspShadowRocket</a>
+                <a href="./surge" class="navbar-item"><span class="icon"><i class="metron-surge"></i></span>&nbspSurge</a>
+                <a href="https://bianyuan.xyz/" class="navbar-item">&nbsp?&nbsp&nbspMore</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Body -->
+    <div class="container">
+        <div class="section pb-0">
+            <p>⭐️ 自动抓取tg频道、订阅地址、公开互联网上的ss、ssr、vmess、trojan节点信息，聚合去重检测后提供节点列表</p>
+            <p>❗️ 任何使用此开源项目的人须遵守<a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL3.0</a>协议，禁止盈利</p>
+            <hr class="pt-0 pb-0 mb-0 mt-2">
+        </div>
+        <section class='section'>
+            <h5 class="title is-4 mt-3">统计</h5>
+            <p>目前共有抓取源<b class="has-text-primary"> {{ .getters_count }} </b>个，
+                全部节点<b class="has-text-primary"> {{ .all_proxies_count }} </b>个，ss节点<b class="has-text-primary"> {{ .ss_proxies_count }} </b>个，ssr节点<b class="has-text-primary"> {{ .ssr_proxies_count }} </b>个，vmess节点<b class="has-text-primary"> {{ .vmess_proxies_count }} </b>个，trojan节点<b class="has-text-primary"> {{ .trojan_proxies_count }} </b>个</p>
+            <p>可用节点数量：<b class="has-text-primary">{{ .useful_proxies_count }}</b></p>
+            <p>是否开启测速：<b class="has-text-primary">{{ .is_speed_test }}</b></p>
+            <p>最后更新时间：<b class="has-text-primary">{{ .last_crawl_time }}</b></p>
+        </section>
+        <section class="section">
+            <h5 class="title is-4">客户端</h5>
+            <div class="columns">
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="card-header-title"><span class="icon"><i class="metron-clash"></i></span>Clash</p>
+                        </div>
+                        <div class="card-content pt-0">
+                            <button data-copy="https://{{ .domain }}/clash/config" onclick="onCopyThis(this)" class="button is-small is-primary">配置文件</button>
+                            <a href="clash://install-config?url=https://{{ .domain }}/clash/config" class="button is-small is-info">一键导入</a>
+                        </div>
+                        <footer class="card-footer"><a href="./clash" class="card-footer-item is-justify-content-flex-end has-text-right is-size-7">如何筛选等更多信息 >></a></footer>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="card-header-title"><span class="icon"><i class="metron-shadowrocket"></i></span>ShadowRocket</p>
+                        </div>
+                        <div class="card-content pt-0">
+                            <button data-copy="https://{{ .domain }}/clash/proxies" onclick="onCopyThis(this)" class="button is-small is-primary">复制订阅</button>
+                            <button data-copy="https://{{ .domain }}/clash/proxies?c=HK,TW,US,JP,SG" onclick="onCopyThis(this)" class="button is-small is-warning">常用国家</button>
+                        </div>
+                        <footer class="card-footer"><a href="./shadowrocket" class="card-footer-item is-justify-content-flex-end is-size-7">如何筛选等更多信息 >></a></footer>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="card-header-title"><span class="icon"><i class="metron-surge"></i></span>Surge</p>
+                        </div>
+                        <div class="card-content pt-0">
+                            <button data-copy="https://{{ .domain }}/surge/config" onclick="onCopyThis(this)" class="button is-small is-primary">配置文件</button>
+                            <a href="surge3:///install-config?url=https://{{ .domain }}/surge/config" class="button is-small is-info">一键导入</a>
+                        </div>
+                        <footer class="card-footer"><a href="./surge" class="card-footer-item is-justify-content-flex-end is-size-7">更多信息 >></a></footer>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="card-header-title"><span class="icon">?</span>More</p>
+                        </div>
+                        <div class="card-content pt-0">
+                            <a href="https://bianyuan.xyz/" class="button is-small is-warning">使用订阅转换</a>
+                        </div>
+                        <footer class="card-footer"><span class="card-footer-item is-justify-content-flex-end is-size-7">☺️<span></footer>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section ">
+            <h5 class="title is-4">订阅链接</h5>
+            <p>❗ 不建议日常使用，节点过多时易造成卡顿，建议筛选后使用订阅转换</p>
+            <p>⭐️ 筛选方式参考<a href="./clash#query">Clash筛选参数</a></p>
+            <div class="table-container mt-2">
+                <table class="table is-fullwidth">
+                    <tbody>
+                        <tr>
+                            <th>ss</th>
+                            <td>https://{{ .domain }}/ss/sub</td>
+                            <td class="has-text-right"><button class="button is-small is-primary" onclick="onCopy(this)">复制</button></td>
+                        </tr>
+                        <tr>
+                            <th>ss-sip002</th>
+                            <td>https://{{ .domain }}/sip002/sub</td>
+                            <td class="has-text-right"><button class="button is-small is-primary" onclick="onCopy(this)">复制</button></td>
+                        </tr>
+                        <tr>
+                            <th>ssr</th>
+                            <td>https://{{ .domain }}/ssr/sub</td>
+                            <td class="has-text-right"><button class="button is-small is-primary" onclick="onCopy(this)">复制</button></td>
+                        </tr>
+                        <tr>
+                            <th>vmess</th>
+                            <td>https://{{ .domain }}/vmess/sub</td>
+                            <td class="has-text-right"><button class="button is-small is-primary" onclick="onCopy(this)">复制</button></td>
+                        </tr>
+                        <tr>
+                            <th>trojan</th>
+                            <td>https://{{ .domain }}/trojan/sub</td>
+                            <td class="has-text-right"><button class="button is-small is-primary" onclick="onCopy(this)">复制</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+    <footer class="footer has-text-centered">
+        <!-- 所有使用本代码提供服务的禁止删除、修改版权信息 -->
+        <p>欢迎关注tg频道：<a href="https://t.me/peekfun">@peekfun</a></p>
+        <p>抓取程序已开源：<a href="https://github.com/zu1k/proxypool">zu1k/proxypool</a></p>
+        <p>本程序为fork版：<a href="https://github.com/sansui233/proxypool">sansui233/proxypool</a></p>
+        <p>修改版：<a href="https://github.com/ssrlive/proxypool">ssrlive/proxypool</a><br>{{ .version }}</p>
+        <br>
+        <p><b>Theme</b>&nbspby&nbsp<a href="https://github.com/sansui233/" class="has-text-primary"><b>Sansui233</b></a> Powered&nbspby&nbsp<b>Bulma</b></p>
+    </footer>
+    <script src="static/index.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9VK0B43EQ3"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-9VK0B43EQ3');
+    </script>
+</body>
+
+</html>

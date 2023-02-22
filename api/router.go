@@ -3,7 +3,6 @@ package api
 import (
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
@@ -351,7 +350,7 @@ func Asset(name string) ([]byte, error) {
 	var _bindata = AssetNames()
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	if slices.Contains(_bindata, cannonicalName) {
-		contents, err := ioutil.ReadFile(cannonicalName)
+		contents, err := os.ReadFile(cannonicalName)
 		if err != nil {
 			return nil, fmt.Errorf("Asset %s can't read by error: %v", name, err)
 		}

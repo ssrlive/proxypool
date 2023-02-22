@@ -3,7 +3,6 @@ package geoIp
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net"
 	"os"
@@ -59,7 +58,7 @@ func NewGeoIP(geodb, flags string) (geoip GeoIP) {
 		log.Println("flags 文件不存在, 请自行下载 flags.json, 并保存在 ", flags)
 		os.Exit(1)
 	} else {
-		data, err := ioutil.ReadFile(flags)
+		data, err := os.ReadFile(flags)
 		if err != nil {
 			log.Fatal(err)
 			return

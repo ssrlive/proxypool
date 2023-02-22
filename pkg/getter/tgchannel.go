@@ -2,7 +2,7 @@ package getter
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"strings"
 	"sync"
 
@@ -87,7 +87,7 @@ func (g *TGChannelGetter) Get() proxy.ProxyList {
 		return result
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil
 	}

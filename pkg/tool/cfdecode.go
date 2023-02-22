@@ -3,7 +3,7 @@ package tool
 import (
 	"bytes"
 	"errors"
-	"io/ioutil"
+	"io"
 	"regexp"
 	"strconv"
 	"strings"
@@ -44,7 +44,7 @@ func CFScriptRedirect(url string) (string, error) {
 		return url, err
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return url, err
 	}

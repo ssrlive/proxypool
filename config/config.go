@@ -3,7 +3,7 @@ package config
 import (
 	"encoding/json"
 	"errors"
-	"io/ioutil"
+	"io"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -146,12 +146,12 @@ func ReadFile(path string) ([]byte, error) {
 			return nil, errors.New("config file http get fail")
 		}
 		defer resp.Body.Close()
-		return ioutil.ReadAll(resp.Body)
+		return io.ReadAll(resp.Body)
 	} else {
 		if _, err := os.Stat(path); os.IsNotExist(err) {
 			return nil, err
 		}
-		return ioutil.ReadFile(path)
+		return os.ReadFile(path)
 	}
 }
 

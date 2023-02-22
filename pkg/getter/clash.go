@@ -2,7 +2,7 @@ package getter
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"regexp"
 	"strings"
 	"sync"
@@ -31,7 +31,7 @@ func (c *Clash) Get() proxy.ProxyList {
 		return nil
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil
 	}
@@ -48,9 +48,7 @@ func (c *Clash) Get() proxy.ProxyList {
 
 }
 
-//
 // clash 文檔有效性檢查
-//
 func buildClashDoc(fullcheck bool, body []byte) []byte {
 	regexp0, _ := regexp.Compile(`-\s*{`)
 

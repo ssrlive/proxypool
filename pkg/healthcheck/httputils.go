@@ -5,7 +5,7 @@ import (
 	"fmt"
 	C "github.com/Dreamacro/clash/constant"
 	"github.com/ssrlive/proxypool/pkg/proxy"
-	"io/ioutil"
+	"io"
 	"net"
 	"net/http"
 	"net/url"
@@ -186,7 +186,7 @@ func HTTPGetBodyViaProxy(clashProxy C.Proxy, url string) ([]byte, error) {
 	defer resp.Body.Close()
 
 	// read speedtest config file
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -240,7 +240,7 @@ func HTTPGetBodyViaProxyWithTime(clashProxy C.Proxy, url string, t time.Duration
 	defer resp.Body.Close()
 
 	// read speedtest config file
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -295,7 +295,7 @@ func HTTPGetBodyViaProxyWithTimeNoReturn(clashProxy C.Proxy, url string, t time.
 	defer resp.Body.Close()
 
 	// read speedtest config file
-	_, err = ioutil.ReadAll(resp.Body)
+	_, err = io.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}

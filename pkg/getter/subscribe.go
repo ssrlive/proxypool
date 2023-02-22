@@ -1,7 +1,7 @@
 package getter
 
 import (
-	"io/ioutil"
+	"io"
 	"strings"
 	"sync"
 
@@ -28,7 +28,7 @@ func (s *Subscribe) Get() proxy.ProxyList {
 		return nil
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil
 	}

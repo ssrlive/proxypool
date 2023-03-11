@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -350,7 +351,9 @@ func Asset(name string) ([]byte, error) {
 	var _bindata = AssetNames()
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	if slices.Contains(_bindata, cannonicalName) {
-		contents, err := os.ReadFile(cannonicalName)
+		parentPath := config.ResourceRoot()
+		fullFilePath := filepath.Join(parentPath, cannonicalName)
+		contents, err := os.ReadFile(fullFilePath)
 		if err != nil {
 			return nil, fmt.Errorf("Asset %s can't read by error: %v", name, err)
 		}

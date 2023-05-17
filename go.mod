@@ -17,7 +17,7 @@ require (
 	github.com/oschwald/geoip2-golang v1.8.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/robertkrimen/otto v0.2.1
-	github.com/sirupsen/logrus v1.9.0
+	github.com/sirupsen/logrus v1.9.1
 	github.com/x-cray/logrus-prefixed-formatter v0.5.2
 	golang.org/x/exp v0.0.0-20230425010034-47ecfdc1ba53
 	gopkg.in/yaml.v3 v3.0.1
@@ -39,20 +39,13 @@ require (
 	github.com/go-playground/validator/v10 v10.13.0 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
-	github.com/gofrs/uuid v4.4.0+incompatible // indirect
 	github.com/gofrs/uuid/v5 v5.0.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/gomodule/redigo v1.8.9 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
-	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
-	github.com/jackc/pgconn v1.13.0 // indirect
-	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
-	github.com/jackc/pgproto3/v2 v2.3.1 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
-	github.com/jackc/pgtype v1.13.0 // indirect
-	github.com/jackc/pgx/v4 v4.17.2 // indirect
 	github.com/jackc/pgx/v5 v5.3.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
@@ -69,7 +62,6 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/oschwald/maxminddb-golang v1.10.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.7 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/robfig/go-cache v0.0.0-20130306151617-9fc39e0dbf62 // indirect
 	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d // indirect
 	github.com/temoto/robotstxt v1.1.2 // indirect

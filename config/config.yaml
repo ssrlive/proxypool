@@ -1,6 +1,15 @@
 # your domain
 domain: example.com   # or example.com:9443 for reserve proxy server
 port:                 # default 12580
+# subscribe pool check
+pool-files-check: # v0.7.15 default false
+pool-files:  # v0.7.15 When the readiness check is executed, it will output a source.yaml file in the same directory. The script will automatically exclude any duplicate URLs.
+#  - type: txt # 1.txt,Each URL should be placed on a separate line
+#    url:  https://example.com/config/source.txt # use web file
+#  - type: yaml # 2.yaml ,The content of the file should be identical to the source.yaml file.
+#    url: https://example.com/config/source.yaml # use web file
+#  - type: yaml # use local file
+#    url: source.yaml # local file
 
 # source list file
 source-files:
@@ -35,3 +44,8 @@ active-max-number:          # default 100. If more than this number of active pr
 #==== Cloudflare api ====#
 cf_email: ""
 cf_key: ""
+
+#==== stream test support disney+ and netflix ====
+stream-max-connect: 500         # v0.7.14 default 500
+netflix-test: true          # v0.7.14 default false
+disney-test: true           # v0.7.14 default false

@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"fmt"
+	"regexp"
 	"sort"
 	"strings"
 )
@@ -70,15 +71,23 @@ func (ps ProxyList) Sort() ProxyList {
 func (ps ProxyList) NameClear() ProxyList {
 	num := len(ps)
 	for i := 0; i < num; i++ {
-		ps[i].SetName("")
+		pattern := "D\\+|Disney|disney|迪士尼|NF|奈飞|解锁|Netflix|NETFLIX|Media|netflix|media"
+		reg := regexp.MustCompile(pattern)
+		if !reg.MatchString(ps[i].BaseInfo().Name) {
+			ps[i].SetName("")
+		}
 	}
 	return ps
 }
 
 func (ps ProxyList) NameAddCounrty() ProxyList {
 	num := len(ps)
+	pattern := "D\\+|Disney|disney|迪士尼|NF|奈飞|解锁|Netflix|NETFLIX|Media|netflix|media"
+	reg := regexp.MustCompile(pattern)
 	for i := 0; i < num; i++ {
-		ps[i].SetName(ps[i].BaseInfo().Name + ps[i].BaseInfo().Country)
+		if !reg.MatchString(ps[i].BaseInfo().Name) {
+			ps[i].SetName(ps[i].BaseInfo().Name + ps[i].BaseInfo().Country)
+		}
 	}
 	return ps
 }

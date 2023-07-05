@@ -14,8 +14,8 @@ import (
 	"time"
 
 	"github.com/antchfx/htmlquery"
-	"github.com/ssrlive/proxypool/log"
-	"github.com/ssrlive/proxypool/pkg/proxy"
+	"github.com/asdlokj1qpi23/proxypool/log"
+	"github.com/asdlokj1qpi23/proxypool/pkg/proxy"
 
 	"github.com/ivpusic/grpool"
 
@@ -110,7 +110,7 @@ func testDelay(p proxy.Proxy) (delay time.Duration, err error) {
 	defer close(respC)
 	go func() {
 		sTime := time.Now()
-		err = HTTPHeadViaProxy(clashProxy, "http://www.gstatic.com/generate_204")
+		err = HTTPHeadViaProxy(clashProxy, "https://www.gstatic.com/generate_204")
 		respC <- struct {
 			time.Duration
 			error

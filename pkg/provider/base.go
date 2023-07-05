@@ -3,13 +3,14 @@ package provider
 import (
 	"fmt"
 	"math"
+	"regexp"
 	"strconv"
 	"strings"
 
-	"github.com/ssrlive/proxypool/log"
-	"github.com/ssrlive/proxypool/pkg/healthcheck"
+	"github.com/asdlokj1qpi23/proxypool/log"
+	"github.com/asdlokj1qpi23/proxypool/pkg/healthcheck"
 
-	"github.com/ssrlive/proxypool/pkg/proxy"
+	"github.com/asdlokj1qpi23/proxypool/pkg/proxy"
 )
 
 type Provider interface {
@@ -17,12 +18,14 @@ type Provider interface {
 }
 
 type Base struct {
-	Proxies    *proxy.ProxyList `yaml:"proxies"`
-	Types      string           `yaml:"type"`
-	Country    string           `yaml:"country"`
-	NotCountry string           `yaml:"not_country"`
-	Speed      string           `yaml:"speed"`
-	Filter     string           `yaml:"filter"`
+	Proxies         *proxy.ProxyList `yaml:"proxies"`
+	Types           string           `yaml:"type"`
+	Country         string           `yaml:"country"`
+	NotCountry      string           `yaml:"not_country"`
+	Speed           string           `yaml:"speed"`
+	Filter          string           `yaml:"filter"`
+	StreamFilter    string           `yaml:"stream"`
+	StreamNotFilter string           `yaml:"not_stream"`
 }
 
 // 根据子类的的Provide()传入的信息筛选节点，结果会改变传入的proxylist。
@@ -40,6 +43,8 @@ func (b *Base) preFilter() {
 	needFilterNotCountry := true
 	needFilterSpeed := true
 	needFilterFilter := true
+	needStreamFilter := true
+	needStreamNotFilter := true
 	if b.Types == "" || b.Types == "all" {
 		needFilterType = false
 	}
@@ -55,11 +60,18 @@ func (b *Base) preFilter() {
 	if b.Filter == "" {
 		needFilterFilter = false
 	}
+	if b.StreamFilter == "" {
+		needStreamFilter = false
+	}
+	if b.StreamNotFilter == "" {
+		needStreamNotFilter = false
+	}
 	types := strings.Split(b.Types, ",")
 	countries := strings.Split(b.Country, ",")
 	notCountries := strings.Split(b.NotCountry, ",")
 	speedMin, speedMax := checkSpeed(strings.Split(b.Speed, ","))
-
+	streams := strings.Split(b.StreamFilter, ",")
+	nstreams := strings.Split(b.StreamNotFilter, ",")
 	if speedMin == -1 {
 		needFilterSpeed = false
 	}
@@ -76,6 +88,42 @@ func (b *Base) preFilter() {
 			}
 			if !typeOk {
 				goto exclude
+			}
+		}
+		if needStreamFilter {
+			streamOk := false
+			var pattern string
+			for _, c := range streams {
+				if c == "disney" {
+					pattern = "D\\+|Disney|disney|迪士尼"
+				}
+				if c == "netflix" {
+					pattern = "NF|奈飞|解锁|Netflix|NETFLIX|netflix"
+				}
+				reg := regexp.MustCompile(pattern)
+				if reg.MatchString(p.BaseInfo().Name) {
+					streamOk = true
+					break
+				}
+			}
+			if !streamOk {
+				goto exclude
+			}
+		}
+
+		if needStreamNotFilter {
+			var pattern string
+			for _, c := range nstreams {
+				if c == "disney" {
+					pattern = "D\\+|Disney|disney|迪士尼"
+				}
+				if c == "netflix" {
+					pattern = "NF|奈飞|解锁|Netflix|NETFLIX|netflix"
+				}
+				reg := regexp.MustCompile(pattern)
+				if reg.MatchString(p.BaseInfo().Name) {
+					goto exclude
+				}
 			}
 		}
 
@@ -171,7 +219,6 @@ func (b *Base) preFilter() {
 		}
 	exclude:
 	}
-
 	b.Proxies = &proxies
 }
 

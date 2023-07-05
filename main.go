@@ -2,17 +2,15 @@ package main
 
 import (
 	"flag"
+	"github.com/asdlokj1qpi23/proxypool/api"
+	"github.com/asdlokj1qpi23/proxypool/config"
+	"github.com/asdlokj1qpi23/proxypool/internal/app"
+	"github.com/asdlokj1qpi23/proxypool/internal/cron"
+	"github.com/asdlokj1qpi23/proxypool/internal/database"
+	"github.com/asdlokj1qpi23/proxypool/log"
+	"github.com/asdlokj1qpi23/proxypool/pkg/geoIp"
 	_ "net/http/pprof"
 	"os"
-
-	"github.com/ssrlive/proxypool/config"
-	"github.com/ssrlive/proxypool/pkg/geoIp"
-
-	"github.com/ssrlive/proxypool/api"
-	"github.com/ssrlive/proxypool/internal/app"
-	"github.com/ssrlive/proxypool/internal/cron"
-	"github.com/ssrlive/proxypool/internal/database"
-	"github.com/ssrlive/proxypool/log"
 )
 
 var debugMode = false
@@ -27,7 +25,6 @@ func main() {
 	flag.StringVar(&configFilePath, "c", "", "path to config file: config.yaml")
 	flag.BoolVar(&debugMode, "d", false, "debug output")
 	flag.Parse()
-
 	log.SetLevel(log.INFO)
 	if debugMode {
 		log.SetLevel(log.DEBUG)

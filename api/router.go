@@ -10,19 +10,19 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ssrlive/proxypool/log"
+	"github.com/asdlokj1qpi23/proxypool/log"
 	"golang.org/x/exp/slices"
 
+	"github.com/asdlokj1qpi23/proxypool/config"
+	appcache "github.com/asdlokj1qpi23/proxypool/internal/cache"
+	"github.com/asdlokj1qpi23/proxypool/pkg/provider"
 	"github.com/gin-contrib/cache"
 	"github.com/gin-contrib/cache/persistence"
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"
-	"github.com/ssrlive/proxypool/config"
-	appcache "github.com/ssrlive/proxypool/internal/cache"
-	"github.com/ssrlive/proxypool/pkg/provider"
 )
 
-const version = "v0.7.12"
+const version = "v0.7.15"
 
 var router *gin.Engine
 
@@ -52,6 +52,10 @@ func setupRouter() {
 			"useful_proxies_count": appcache.UsefullProxiesCount,
 			"last_crawl_time":      appcache.LastCrawlTime,
 			"is_speed_test":        appcache.IsSpeedTest,
+			"is_netflix_test":      appcache.IsNetflixTest,
+			"is_disney_test":       appcache.IsDisneyTest,
+			"netflix_count":        appcache.NetflixCount,
+			"disney_count":         appcache.DisneyCount,
 			"version":              version,
 		})
 	})
@@ -98,8 +102,10 @@ func setupRouter() {
 		proxyNotCountry := c.DefaultQuery("nc", "")
 		proxySpeed := c.DefaultQuery("speed", "")
 		proxyFilter := c.DefaultQuery("filter", "")
+		streamFilter := c.DefaultQuery("stream", "")
+		streamNotFilter := c.DefaultQuery("nstream", "")
 		text := ""
-		if proxyTypes == "" && proxyCountry == "" && proxyNotCountry == "" && proxySpeed == "" && proxyFilter == "" {
+		if proxyTypes == "" && proxyCountry == "" && proxyNotCountry == "" && proxySpeed == "" && proxyFilter == "" && streamFilter == "" && streamNotFilter == "" {
 			text = appcache.GetString("clashproxies") // A string. To show speed in this if condition, this must be updated after speedtest
 			if text == "" {
 				proxies := appcache.GetProxies("proxies")
@@ -115,12 +121,14 @@ func setupRouter() {
 			proxies := appcache.GetProxies("allproxies")
 			clash := provider.Clash{
 				Base: provider.Base{
-					Proxies:    &proxies,
-					Types:      proxyTypes,
-					Country:    proxyCountry,
-					NotCountry: proxyNotCountry,
-					Speed:      proxySpeed,
-					Filter:     proxyFilter,
+					Proxies:         &proxies,
+					Types:           proxyTypes,
+					Country:         proxyCountry,
+					NotCountry:      proxyNotCountry,
+					Speed:           proxySpeed,
+					Filter:          proxyFilter,
+					StreamFilter:    streamFilter,
+					StreamNotFilter: streamNotFilter,
 				},
 			}
 			text = clash.Provide() // 根据Query筛选节点
@@ -128,12 +136,14 @@ func setupRouter() {
 			proxies := appcache.GetProxies("proxies")
 			clash := provider.Clash{
 				Base: provider.Base{
-					Proxies:    &proxies,
-					Types:      proxyTypes,
-					Country:    proxyCountry,
-					NotCountry: proxyNotCountry,
-					Speed:      proxySpeed,
-					Filter:     proxyFilter,
+					Proxies:         &proxies,
+					Types:           proxyTypes,
+					Country:         proxyCountry,
+					NotCountry:      proxyNotCountry,
+					Speed:           proxySpeed,
+					Filter:          proxyFilter,
+					StreamFilter:    streamFilter,
+					StreamNotFilter: streamNotFilter,
 				},
 			}
 			text = clash.Provide() // 根据Query筛选节点

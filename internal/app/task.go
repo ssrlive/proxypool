@@ -2,17 +2,19 @@ package app
 
 import (
 	"fmt"
+	"github.com/asdlokj1qpi23/proxypool/pkg/healthcheck/stream"
+	"regexp"
 	"sync"
 	"time"
 
-	C "github.com/ssrlive/proxypool/config"
-	"github.com/ssrlive/proxypool/internal/cache"
-	"github.com/ssrlive/proxypool/internal/database"
-	"github.com/ssrlive/proxypool/log"
-	"github.com/ssrlive/proxypool/pkg/geoIp"
-	"github.com/ssrlive/proxypool/pkg/healthcheck"
-	"github.com/ssrlive/proxypool/pkg/provider"
-	"github.com/ssrlive/proxypool/pkg/proxy"
+	C "github.com/asdlokj1qpi23/proxypool/config"
+	"github.com/asdlokj1qpi23/proxypool/internal/cache"
+	"github.com/asdlokj1qpi23/proxypool/internal/database"
+	"github.com/asdlokj1qpi23/proxypool/log"
+	"github.com/asdlokj1qpi23/proxypool/pkg/geoIp"
+	"github.com/asdlokj1qpi23/proxypool/pkg/healthcheck"
+	"github.com/asdlokj1qpi23/proxypool/pkg/provider"
+	"github.com/asdlokj1qpi23/proxypool/pkg/proxy"
 )
 
 var location, _ = time.LoadLocation("Asia/Shanghai")
@@ -96,20 +98,38 @@ func CrawlGo() {
 
 	// Relay check and rename
 	healthcheck.RelayCheck(proxies)
+	pattern := "D\\+|Disney|disney|迪士尼|NF|奈飞|解锁|Netflix|NETFLIX|Media|netflix|media"
+	reg := regexp.MustCompile(pattern)
 	for i := range proxies {
-		if s, ok := healthcheck.ProxyStats.Find(proxies[i]); ok {
-			if s.Relay {
-				_, c, e := geoIp.GeoIpDB.Find(s.OutIp)
-				if e == nil {
-					proxies[i].SetName(fmt.Sprintf("Relay_%s-%s", proxies[i].BaseInfo().Name, c))
+		if !reg.MatchString(proxies[i].BaseInfo().Name) {
+			if s, ok := healthcheck.ProxyStats.Find(proxies[i]); ok {
+				if s.Relay {
+					_, c, e := geoIp.GeoIpDB.Find(s.OutIp)
+					if e == nil {
+						proxies[i].SetName(fmt.Sprintf("Relay_%s-%s", proxies[i].BaseInfo().Name, c))
+					}
+				} else if s.Pool {
+					proxies[i].SetName(fmt.Sprintf("Pool_%s", proxies[i].BaseInfo().Name))
 				}
-			} else if s.Pool {
-				proxies[i].SetName(fmt.Sprintf("Pool_%s", proxies[i].BaseInfo().Name))
 			}
 		}
 	}
-
 	proxies.NameAddIndex()
+	if C.Config.NetflixTest {
+		cache.IsNetflixTest = "已开启"
+		proxies = stream.RunNetflix(proxies)
+		log.Infoln("Netflix check DONE!")
+	} else {
+		cache.IsNetflixTest = "未开启"
+	}
+
+	if C.Config.DisneyTest {
+		cache.IsDisneyTest = "已开启"
+		stream.RunDisney(proxies)
+		log.Infoln("Disney check DONE!")
+	} else {
+		cache.IsDisneyTest = "未开启"
+	}
 
 	// 可用节点存储
 	cache.SetProxies("proxies", proxies)

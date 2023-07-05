@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/xml"
 	"errors"
-
 	C "github.com/Dreamacro/clash/constant"
 )
 

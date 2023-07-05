@@ -27,3 +27,5 @@ vendor
 
 # macOS file
 .DS_Store
+config.yaml
+source.yaml

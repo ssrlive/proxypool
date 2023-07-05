@@ -3,9 +3,8 @@ package proxy
 import (
 	"encoding/json"
 	"errors"
+	"github.com/asdlokj1qpi23/proxypool/pkg/geoIp"
 	"strings"
-
-	"github.com/ssrlive/proxypool/pkg/geoIp"
 )
 
 /* Base implements interface Proxy. It's the basic proxy struct. Vmess etc extends Base*/
@@ -108,7 +107,6 @@ func ParseProxyFromLink(link string) (p Proxy, err error) {
 }
 
 func ParseProxyFromClashProxy(p map[string]interface{}) (proxy Proxy, err error) {
-	p["name"] = ""
 	pjson, err := json.Marshal(p)
 	if err != nil {
 		return nil, err

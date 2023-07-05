@@ -7,9 +7,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/ssrlive/proxypool/log"
-	"github.com/ssrlive/proxypool/pkg/proxy"
-	"github.com/ssrlive/proxypool/pkg/tool"
+	"github.com/asdlokj1qpi23/proxypool/log"
+	"github.com/asdlokj1qpi23/proxypool/pkg/proxy"
+	"github.com/asdlokj1qpi23/proxypool/pkg/tool"
 	"gopkg.in/yaml.v3"
 )
 

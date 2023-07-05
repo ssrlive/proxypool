@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ssrlive/proxypool/pkg/tool"
+	"github.com/asdlokj1qpi23/proxypool/pkg/tool"
 
-	"github.com/ssrlive/proxypool/pkg/proxy"
+	"github.com/asdlokj1qpi23/proxypool/pkg/proxy"
 )
 
 type SSSub struct {

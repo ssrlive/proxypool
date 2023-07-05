@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	C "github.com/Dreamacro/clash/constant"
-	"github.com/ssrlive/proxypool/pkg/proxy"
+	"github.com/asdlokj1qpi23/proxypool/pkg/proxy"
 	"io"
 	"net"
 	"net/http"
@@ -33,9 +33,9 @@ func urlToMetadata(rawURL string) (addr C.Metadata, err error) {
 	}
 
 	addr = C.Metadata{
-		Host:     u.Hostname(),
-		DstIP:    nil,
-		DstPort:  port,
+		Host:    u.Hostname(),
+		DstIP:   nil,
+		DstPort: port,
 	}
 	return
 }

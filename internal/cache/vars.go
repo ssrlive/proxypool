@@ -11,4 +11,8 @@ var (
 	UsefullProxiesCount = 0
 	LastCrawlTime       = "程序正在启动，请于3分钟后刷新页面"
 	IsSpeedTest         = "未开启"
+	IsNetflixTest       = "未开启"
+	IsDisneyTest        = "未开启"
+	NetflixCount        = 0
+	DisneyCount         = 0
 )

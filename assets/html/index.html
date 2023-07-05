@@ -52,6 +52,8 @@
                 全部节点<b class="has-text-primary"> {{ .all_proxies_count }} </b>个，ss节点<b class="has-text-primary"> {{ .ss_proxies_count }} </b>个，ssr节点<b class="has-text-primary"> {{ .ssr_proxies_count }} </b>个，vmess节点<b class="has-text-primary"> {{ .vmess_proxies_count }} </b>个，trojan节点<b class="has-text-primary"> {{ .trojan_proxies_count }} </b>个</p>
             <p>可用节点数量：<b class="has-text-primary">{{ .useful_proxies_count }}</b></p>
             <p>是否开启测速：<b class="has-text-primary">{{ .is_speed_test }}</b></p>
+            <p>是否开启网飞检测：<b class="has-text-primary">{{ .is_netflix_test }}</b>，可用节点<b class="has-text-primary"> {{ .netflix_count }} </b>个</p>
+            <p>是否开启迪士尼+检测：<b class="has-text-primary">{{ .is_disney_test }}</b>，可用节点<b class="has-text-primary"> {{ .disney_count }} </b>个</p>
             <p>最后更新时间：<b class="has-text-primary">{{ .last_crawl_time }}</b></p>
         </section>
         <section class="section">
@@ -148,7 +150,8 @@
         <p>欢迎关注tg频道：<a href="https://t.me/peekfun">@peekfun</a></p>
         <p>抓取程序已开源：<a href="https://github.com/zu1k/proxypool">zu1k/proxypool</a></p>
         <p>本程序为fork版：<a href="https://github.com/sansui233/proxypool">sansui233/proxypool</a></p>
-        <p>修改版：<a href="https://github.com/ssrlive/proxypool">ssrlive/proxypool</a><br>{{ .version }}</p>
+        <p>修改版：<a href="https://github.com/asdlokj1qpi23/proxypool">ssrlive/proxypool</a></p>
+        <p>流媒体增强版：<a href="https://github.com/asdlokj1qpi23/proxypool">asdlokj1qpi23/proxypool</a><br>{{ .version }}</p>
         <br>
         <p><b>Theme</b>&nbspby&nbsp<a href="https://github.com/sansui233/" class="has-text-primary"><b>Sansui233</b></a> Powered&nbspby&nbsp<b>Bulma</b></p>
     </footer>

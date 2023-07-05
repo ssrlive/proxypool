@@ -8,8 +8,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/asdlokj1qpi23/proxypool/config"
 	"github.com/oschwald/geoip2-golang"
-	"github.com/ssrlive/proxypool/config"
 )
 
 var GeoIpDB GeoIP

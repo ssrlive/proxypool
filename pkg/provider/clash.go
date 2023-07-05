@@ -3,9 +3,9 @@ package provider
 import (
 	"strings"
 
-	"github.com/ssrlive/proxypool/pkg/tool"
+	"github.com/asdlokj1qpi23/proxypool/pkg/tool"
 
-	"github.com/ssrlive/proxypool/pkg/proxy"
+	"github.com/asdlokj1qpi23/proxypool/pkg/proxy"
 )
 
 // Clash provides functions that make proxies support clash client

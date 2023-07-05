@@ -10,31 +10,41 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/ssrlive/proxypool/log"
+	"github.com/asdlokj1qpi23/proxypool/log"
 
+	"github.com/asdlokj1qpi23/proxypool/pkg/tool"
 	"github.com/ghodss/yaml"
-	"github.com/ssrlive/proxypool/pkg/tool"
 )
 
 var configFilePath = "config.yaml"
 
+type PoolFile struct {
+	Type string `json:"type" yaml:"type"`
+	Url  string `json:"url" yaml:"url"`
+}
+
 type ConfigOptions struct {
-	Domain                string   `json:"domain" yaml:"domain"`
-	Port                  string   `json:"port" yaml:"port"`
-	DatabaseUrl           string   `json:"database_url" yaml:"database_url"`
-	CrawlInterval         uint64   `json:"crawl-interval" yaml:"crawl-interval"`
-	CFEmail               string   `json:"cf_email" yaml:"cf_email"`
-	CFKey                 string   `json:"cf_key" yaml:"cf_key"`
-	SourceFiles           []string `json:"source-files" yaml:"source-files"`
-	HealthCheckTimeout    int      `json:"healthcheck-timeout" yaml:"healthcheck-timeout"`
-	HealthCheckConnection int      `json:"healthcheck-connection" yaml:"healthcheck-connection"`
-	SpeedTest             bool     `json:"speedtest" yaml:"speedtest"`
-	SpeedTestInterval     uint64   `json:"speedtest-interval" yaml:"speedtest-interval"`
-	SpeedTimeout          int      `json:"speed-timeout" yaml:"speed-timeout"`
-	SpeedConnection       int      `json:"speed-connection" yaml:"speed-connection"`
-	ActiveFrequency       uint16   `json:"active-frequency" yaml:"active-frequency" `
-	ActiveInterval        uint64   `json:"active-interval" yaml:"active-interval"`
-	ActiveMaxNumber       uint16   `json:"active-max-number" yaml:"active-max-number"`
+	Domain                string     `json:"domain" yaml:"domain"`
+	Port                  string     `json:"port" yaml:"port"`
+	DatabaseUrl           string     `json:"database_url" yaml:"database_url"`
+	CrawlInterval         uint64     `json:"crawl-interval" yaml:"crawl-interval"`
+	CFEmail               string     `json:"cf_email" yaml:"cf_email"`
+	CFKey                 string     `json:"cf_key" yaml:"cf_key"`
+	SourceFiles           []string   `json:"source-files" yaml:"source-files"`
+	HealthCheckTimeout    int        `json:"healthcheck-timeout" yaml:"healthcheck-timeout"`
+	HealthCheckConnection int        `json:"healthcheck-connection" yaml:"healthcheck-connection"`
+	SpeedTest             bool       `json:"speedtest" yaml:"speedtest"`
+	SpeedTestInterval     uint64     `json:"speedtest-interval" yaml:"speedtest-interval"`
+	SpeedTimeout          int        `json:"speed-timeout" yaml:"speed-timeout"`
+	SpeedConnection       int        `json:"speed-connection" yaml:"speed-connection"`
+	ActiveFrequency       uint16     `json:"active-frequency" yaml:"active-frequency" `
+	ActiveInterval        uint64     `json:"active-interval" yaml:"active-interval"`
+	ActiveMaxNumber       uint16     `json:"active-max-number" yaml:"active-max-number"`
+	NetflixTest           bool       `json:"netflix-test" yaml:"netflix-test"`
+	DisneyTest            bool       `json:"disney-test" yaml:"disney-test"`
+	StreamMaxConn         int        `json:"stream-max-connect" yaml:"stream-max-connect"`
+	PoolFiles             []PoolFile `json:"pool-files" yaml:"pool-files"`
+	PoolFilesCheck        bool       `json:"pool-files-check" yaml:"pool-files-check"`
 }
 
 // Config 配置
@@ -90,6 +100,9 @@ func Parse() error {
 	}
 	if Config.SpeedTimeout <= 0 {
 		Config.SpeedTimeout = 10
+	}
+	if Config.StreamMaxConn <= 0 {
+		Config.StreamMaxConn = 500
 	}
 
 	// set default

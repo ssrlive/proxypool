@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/asdlokj1qpi23/proxypool/pkg/geoIp"
+	"regexp"
 	"strings"
 )
 
@@ -107,6 +108,16 @@ func ParseProxyFromLink(link string) (p Proxy, err error) {
 }
 
 func ParseProxyFromClashProxy(p map[string]interface{}) (proxy Proxy, err error) {
+	name, ok := p["name"].(string)
+	if ok {
+		pattern := "D\\+|Disney|disney|迪士尼|NF|奈飞|解锁|Netflix|NETFLIX|Media|netflix|media"
+		reg := regexp.MustCompile(pattern)
+		if !reg.MatchString(name) {
+			p["name"] = ""
+		}
+	} else {
+		p["name"] = ""
+	}
 	pjson, err := json.Marshal(p)
 	if err != nil {
 		return nil, err

@@ -36,6 +36,9 @@ func (w *WebFuzzSub) Get() proxy.ProxyList {
 		newResult := (&Subscribe{Url: url}).Get()
 		if len(newResult) == 0 {
 			newResult = (&Clash{Url: url}).Get()
+			if len(newResult) == 0 {
+				newResult = (&WebFuzz{Url: url}).Get()
+			}
 		}
 		result = result.UniqAppendProxyList(newResult)
 	}

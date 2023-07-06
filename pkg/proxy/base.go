@@ -126,6 +126,9 @@ func ParseProxyFromClashProxy(p map[string]interface{}) (proxy Proxy, err error)
 	if err != nil {
 		return nil, err
 	}
+	if p["type"] == nil {
+		return nil, errors.New("clash json parse failed")
+	}
 	switch p["type"].(string) {
 	case "ss":
 		var proxy Shadowsocks

@@ -35,13 +35,13 @@
 
 如果支持，会对节点进行重命名。
 
-支持Netflix的节点会包含`netflix_`
+支持Netflix的节点名称会包含`netflix_`
 
-支持Disney的节点会包含`disney_`
+支持Disney的节点名称会包含`disney_`
 
 如果使用clash，推荐使用[流媒体增强规则](https://github.com/asdlokj1qpi23/subrule/blob/main/netflix_for_node.ini)
 
-![Stream](docs/stream.png)
+![Stream](docs/im.png)
 
 
 ## 安装

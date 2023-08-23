@@ -4,6 +4,7 @@ import (
 	"fmt"
 	C "github.com/Dreamacro/clash/constant"
 	"net/url"
+	"strconv"
 )
 
 func urlToMetadata(rawURL string) (addr C.Metadata, err error) {
@@ -27,7 +28,17 @@ func urlToMetadata(rawURL string) (addr C.Metadata, err error) {
 	addr = C.Metadata{
 		Host:    u.Hostname(),
 		DstIP:   nil,
-		DstPort: port,
+		DstPort: C.Port(convertPort(port)),
 	}
+	return
+}
+
+func convertPort(port string) (uint16num uint16) {
+	num, err := strconv.ParseUint(port, 10, 16)
+	if err != nil {
+		fmt.Println("转换失败：", err)
+		return
+	}
+	uint16num = uint16(num)
 	return
 }
